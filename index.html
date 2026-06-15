@@ -158,6 +158,80 @@ a.algo-a:hover{text-decoration-color:#9a4a2e}
 .av-blink{animation:blink 1.1s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.cl-dot,.cl-ring,.rt-path,.as-line,.so-chip,.bar-g,.bar-x,.mv-item,.av-blink{animation:none}.cl-ring{opacity:1}.rt-path,.as-line{stroke-dashoffset:0}}
 
+/* ══ ANIMATION THUẬT TOÁN v1.39 — phim step-by-step (a1-a6) ══ */
+.sd-viz .av{width:100%;height:auto;display:block}
+/* ANIM 1 — Gower + Agglomerative */
+.a1-card{animation:a1-fade 8s ease-in-out infinite}
+.a1-c1{animation-delay:0s}.a1-c2{animation-delay:.25s}.a1-c3{animation-delay:.5s}.a1-c4{animation-delay:.75s}.a1-c5{animation-delay:1s}.a1-c6{animation-delay:1.25s}
+@keyframes a1-fade{0%{opacity:0}14%,100%{opacity:1}}
+.a1-ruler1{animation:a1-ruler1 8s ease-in-out infinite;opacity:0}@keyframes a1-ruler1{0%,18%{opacity:0}22%,33%{opacity:1}38%,100%{opacity:0}}
+.a1-ruler2{animation:a1-ruler2 8s ease-in-out infinite;opacity:0}@keyframes a1-ruler2{0%,26%{opacity:0}30%,38%{opacity:1}42%,100%{opacity:0}}
+.a1-lblA{animation:a1-lblA 8s ease-in-out infinite;opacity:0}@keyframes a1-lblA{0%,20%{opacity:0}24%,36%{opacity:1}40%,100%{opacity:0}}
+.a1-lblB{animation:a1-lblB 8s ease-in-out infinite;opacity:0}@keyframes a1-lblB{0%,28%{opacity:0}32%,40%{opacity:1}44%,100%{opacity:0}}
+.a1-bubble1{animation:a1-bub1 8s ease-in-out infinite;opacity:0;transform-origin:center}@keyframes a1-bub1{0%,40%{opacity:0;transform:scale(.4)}46%,100%{opacity:1;transform:scale(1)}}
+.a1-bubble2{animation:a1-bub2 8s ease-in-out infinite;opacity:0;transform-origin:center}@keyframes a1-bub2{0%,62%{opacity:0;transform:scale(.4)}68%,100%{opacity:1;transform:scale(1)}}
+.a1-blinkAB{animation:a1-blink 8s ease-in-out infinite}@keyframes a1-blink{0%,40%{opacity:1}41%{opacity:.3}43%{opacity:1}45%{opacity:.3}47%,100%{opacity:1}}
+.a1-merge1{animation:a1-merge1 8s ease-in-out infinite}@keyframes a1-merge1{0%,44%{opacity:0}48%,100%{opacity:1}}
+.a1-merge2{animation:a1-merge2 8s ease-in-out infinite}@keyframes a1-merge2{0%,64%{opacity:0}70%,100%{opacity:1}}
+.a1-result{animation:a1-result 8s ease-in-out infinite;opacity:0}@keyframes a1-result{0%,82%{opacity:0}88%,100%{opacity:1}}
+/* ANIM 2 — TSP NN + 2-opt */
+.a2-node{animation:a2-fade 8s ease-in-out infinite}.a2-n1{animation-delay:0s}.a2-n2{animation-delay:.15s}.a2-n3{animation-delay:.3s}.a2-n4{animation-delay:.45s}.a2-n5{animation-delay:.6s}.a2-n6{animation-delay:.75s}
+@keyframes a2-fade{0%{opacity:0}12%,100%{opacity:1}}
+.a2-nn{stroke-dasharray:400;stroke-dashoffset:400;animation:a2-nn 8s ease-in-out infinite}@keyframes a2-nn{0%,15%{stroke-dashoffset:400}45%,70%{stroke-dashoffset:0}71%,100%{opacity:0;stroke-dashoffset:0}}
+.a2-cross{animation:a2-cross 8s ease-in-out infinite;opacity:0}@keyframes a2-cross{0%,45%{opacity:0}50%,66%{opacity:1}70%,100%{opacity:0}}
+.a2-opt{animation:a2-opt 8s ease-in-out infinite;opacity:0}@keyframes a2-opt{0%,68%{opacity:0}74%,100%{opacity:1}}
+.a2-lblNN{animation:a2-lblNN 8s ease-in-out infinite;opacity:0}@keyframes a2-lblNN{0%,20%{opacity:0}26%,66%{opacity:1}70%,100%{opacity:0}}
+.a2-lblOpt{animation:a2-lblOpt 8s ease-in-out infinite;opacity:0}@keyframes a2-lblOpt{0%,46%{opacity:0}52%,68%{opacity:1}72%,100%{opacity:0}}
+.a2-lblDone{animation:a2-lblDone 8s ease-in-out infinite;opacity:0}@keyframes a2-lblDone{0%,70%{opacity:0}76%,100%{opacity:1}}
+/* ANIM 3 — Hungarian */
+.a3-grid{animation:a3-fade 8s ease-in-out infinite}@keyframes a3-fade{0%{opacity:0}18%,100%{opacity:1}}
+.a3-zeroR{animation:a3-zeroR 8s ease-in-out infinite;opacity:0}@keyframes a3-zeroR{0%,22%{opacity:0}28%,100%{opacity:1}}
+.a3-zeroC{animation:a3-zeroC 8s ease-in-out infinite;opacity:0}@keyframes a3-zeroC{0%,47%{opacity:0}53%,64%{opacity:1}68%,100%{opacity:0}}
+.a3-pick{animation:a3-pick 8s ease-in-out infinite;opacity:0;transform-origin:center}@keyframes a3-pick{0%,65%{opacity:0;transform:scale(.5)}72%,100%{opacity:1;transform:scale(1)}}
+.a3-link{stroke-dasharray:120;stroke-dashoffset:120;animation:a3-link 8s ease-in-out infinite}@keyframes a3-link{0%,68%{stroke-dashoffset:120}80%,100%{stroke-dashoffset:0}}
+.a3-lblRow{animation:a3-lblRow 8s ease-in-out infinite;opacity:0}@keyframes a3-lblRow{0%,20%{opacity:0}26%,45%{opacity:1}48%,100%{opacity:0}}
+.a3-lblCol{animation:a3-lblCol 8s ease-in-out infinite;opacity:0}@keyframes a3-lblCol{0%,45%{opacity:0}51%,64%{opacity:1}67%,100%{opacity:0}}
+.a3-lblDone{animation:a3-lblDone 8s ease-in-out infinite;opacity:0}@keyframes a3-lblDone{0%,66%{opacity:0}74%,100%{opacity:1}}
+/* ANIM 4 — Clarke-Wright */
+.a4-stop{animation:a4-fade 8s ease-in-out infinite}@keyframes a4-fade{0%{opacity:0}14%,100%{opacity:1}}
+.a4-radial{animation:a4-radial 8s ease-in-out infinite}@keyframes a4-radial{0%,18%{opacity:1}45%{opacity:1}52%,100%{opacity:0}}
+.a4-radial2{animation:a4-radial2 8s ease-in-out infinite}@keyframes a4-radial2{0%,18%{opacity:1}72%{opacity:1}78%,100%{opacity:0}}
+.a4-saving{animation:a4-saving 8s ease-in-out infinite;opacity:0}@keyframes a4-saving{0%,20%{opacity:0}26%,44%{opacity:1}48%,100%{opacity:0}}
+.a4-merge1{animation:a4-m1 8s ease-in-out infinite;opacity:0}@keyframes a4-m1{0%,45%{opacity:0}52%,100%{opacity:1}}
+.a4-merge2{animation:a4-m2 8s ease-in-out infinite;opacity:0}@keyframes a4-m2{0%,72%{opacity:0}78%,100%{opacity:1}}
+.a4-lblDone{animation:a4-lblDone 8s ease-in-out infinite;opacity:0}@keyframes a4-lblDone{0%,74%{opacity:0}80%,100%{opacity:1}}
+/* ANIM 5 — Wave/EDD (FIX collision: slots 40/128/216/304/392) */
+.a5-chip{animation:a5-fade 8s ease-in-out infinite}@keyframes a5-fade{0%{opacity:0}16%,100%{opacity:1}}
+.a5-s1{animation:a5-fade 8s ease-in-out infinite,a5-m1 8s ease-in-out infinite}
+.a5-s2{animation:a5-fade 8s ease-in-out infinite,a5-m2 8s ease-in-out infinite}
+.a5-s3{animation:a5-fade 8s ease-in-out infinite,a5-m3 8s ease-in-out infinite}
+.a5-s4{animation:a5-fade 8s ease-in-out infinite,a5-m4 8s ease-in-out infinite}
+.a5-s5{animation:a5-fade 8s ease-in-out infinite,a5-m5 8s ease-in-out infinite}
+@keyframes a5-m1{0%,20%{transform:translateX(0)}55%,100%{transform:translateX(264px)}}
+@keyframes a5-m2{0%,100%{transform:translateX(0)}}
+@keyframes a5-m3{0%,20%{transform:translateX(0)}55%,100%{transform:translateX(176px)}}
+@keyframes a5-m4{0%,20%{transform:translateX(0)}55%,100%{transform:translateX(-264px)}}
+@keyframes a5-m5{0%,20%{transform:translateX(0)}55%,100%{transform:translateX(-176px)}}
+.a5-lblSort{animation:a5-lblSort 8s ease-in-out infinite;opacity:0}@keyframes a5-lblSort{0%,20%{opacity:0}26%,54%{opacity:1}58%,100%{opacity:0}}
+.a5-wave{animation:a5-wave 8s ease-in-out infinite;opacity:0;transform-origin:center}@keyframes a5-wave{0%,55%{opacity:0;transform:scale(.9)}62%,100%{opacity:1;transform:scale(1)}}
+.a5-late{animation:a5-late 8s ease-in-out infinite;opacity:0}@keyframes a5-late{0%,78%{opacity:0}82%{opacity:1}85%{opacity:.3}89%{opacity:1}93%{opacity:.3}97%,100%{opacity:1}}
+.a5-lblLate{animation:a5-lblLate 8s ease-in-out infinite;opacity:0}@keyframes a5-lblLate{0%,80%{opacity:0}86%,100%{opacity:1}}
+/* ANIM 6 — Dynamic Slot COI */
+.a6-sku{animation:a6-fade 8s ease-in-out infinite}@keyframes a6-fade{0%{opacity:0}16%,100%{opacity:1}}
+.a6-skuA{animation:a6-fade 8s ease-in-out infinite,a6-mvA 8s ease-in-out infinite}
+.a6-skuC{animation:a6-fade 8s ease-in-out infinite,a6-mvC 8s ease-in-out infinite}
+@keyframes a6-mvA{0%,45%{transform:translateX(0)}80%,100%{transform:translateX(-300px)}}
+@keyframes a6-mvC{0%,45%{transform:translateX(0)}80%,100%{transform:translateX(300px)}}
+.a6-coi{animation:a6-coi 8s ease-in-out infinite;opacity:0}@keyframes a6-coi{0%,20%{opacity:0}26%,44%{opacity:1}48%,100%{opacity:0}}
+.a6-lblDone{animation:a6-lblDone 8s ease-in-out infinite;opacity:0}@keyframes a6-lblDone{0%,80%{opacity:0}86%,100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  [class^="a1-"],[class^="a2-"],[class^="a3-"],[class^="a4-"],[class^="a5-"],[class^="a6-"]{animation:none!important;opacity:1}
+  .a1-ruler1,.a1-ruler2,.a1-lblA,.a1-lblB{opacity:0}.a2-nn{stroke-dashoffset:0}.a2-cross,.a2-lblNN,.a2-lblOpt{opacity:0}
+  .a3-link{stroke-dashoffset:0}.a3-lblRow,.a3-lblCol,.a3-zeroC{opacity:0}.a4-radial,.a4-radial2,.a4-saving{opacity:0}
+  .a5-s1{transform:translateX(264px)}.a5-s3{transform:translateX(176px)}.a5-s4{transform:translateX(-264px)}.a5-s5{transform:translateX(-176px)}.a5-lblSort{opacity:0}
+  .a6-skuA{transform:translateX(-300px)}.a6-skuC{transform:translateX(300px)}.a6-coi{opacity:0}
+}
+
 /* table */
 table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0}
 th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line)}
@@ -377,7 +451,7 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="sd-h"><span class="sd-n s1">1</span><b>Backlog — đọc &amp; xếp ưu tiên</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Đọc <b>toàn bộ</b> phiếu chờ pick từ Vietful + thuộc tính thật: SLA · ưu tiên · cỡ · chủ hàng · số ô · khu · serial/FEFO. Phiếu gấp / quá hạn nặng nhất xếp lên đầu.</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/Lexicographic_order" target="_blank" rel="noopener">Sắp xếp đa tiêu chí (lexicographic)</a> — theo thứ tự: bắt buộc → ưu tiên (Priority) → SLA quá hạn.</div>
-      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Mọi phiếu vào tầm ngắm, <b>không sót cái nào</b> — nền cho 4 bước sau. Trên data thật 100% phiếu đã quá hạn → xếp theo mức quá hạn.</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Mọi phiếu vào tầm ngắm, <b>không sót cái nào</b> — nền cho 4 bước sau. Phiếu quá hạn nặng nhất được xếp lên trước.</div>
       <div class="sd-viz"><svg class="av" viewBox="0 0 600 70">
         <g class="so-chip" style="--tx:318px"><rect x="6" y="20" width="96" height="30" rx="8" fill="#e9f3ec" stroke="#bfe3cd"/><text x="54" y="40" text-anchor="middle" font-size="12" fill="#2f8f5b">thường</text></g>
         <g class="so-chip" style="--tx:-106px"><rect x="112" y="20" width="96" height="30" rx="8" fill="#f7e0dd" stroke="#e6b5ad"/><text x="160" y="40" text-anchor="middle" font-size="12" fill="#cf5b52" font-weight="700">⚡ gấp</text></g>
@@ -391,44 +465,70 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Cụm các phiếu tương đồng (cùng chủ hàng · khu · cỡ · loại) để pick 1 lượt; tách nhóm <b>gấp/ưu tiên cao</b> ra xử trước (nhóm bắt buộc).</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://doi.org/10.2307/2528823" target="_blank" rel="noopener">Khoảng cách Gower</a> có trọng số (đo độ giống trên tiêu chí hỗn hợp) + gộp cụm dần <a class="algo-a" href="https://en.wikipedia.org/wiki/Ward%27s_method" target="_blank" rel="noopener">Agglomerative (Ward)</a>.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Cụm các phiếu tương đồng thành nhóm đại diện để pick 1 lượt (clustering minh hoạ trên mẫu vì độ phức tạp O(n³); phát lệnh phủ 100% backlog ở bước Broadcast). <b>Trọng số chỉnh realtime</b>: kéo "chủ hàng" nặng → cụm theo chủ; kéo "khu" nặng → cụm theo zone — cụm đổi ngay.</div>
-      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
-        <ellipse class="cl-ring" cx="175" cy="52" rx="80" ry="40" fill="#fbeee7" stroke="#eccdbd"/>
-        <ellipse class="cl-ring" cx="425" cy="50" rx="74" ry="38" fill="#e9f3ec" stroke="#bfe3cd"/>
-        <circle class="cl-dot" style="--dx:115px;--dy:12px" cx="55" cy="32" r="8" fill="#c2603f"/>
-        <circle class="cl-dot" style="--dx:62px;--dy:-22px" cx="120" cy="78" r="8" fill="#c2603f"/>
-        <circle class="cl-dot" style="--dx:135px;--dy:0px" cx="40" cy="58" r="8" fill="#c2603f"/>
-        <circle class="cl-dot" style="--dx:40px;--dy:18px" cx="150" cy="28" r="8" fill="#c2603f"/>
-        <circle class="cl-dot" style="--dx:88px;--dy:6px" cx="92" cy="50" r="8" fill="#c2603f"/>
-        <circle class="cl-dot" style="--dx:92px;--dy:14px" cx="320" cy="30" r="8" fill="#2f8f5b"/>
-        <circle class="cl-dot" style="--dx:-48px;--dy:-12px" cx="490" cy="68" r="8" fill="#2f8f5b"/>
-        <circle class="cl-dot" style="--dx:38px;--dy:-24px" cx="385" cy="82" r="8" fill="#2f8f5b"/>
-        <circle class="cl-dot" style="--dx:-78px;--dy:8px" cx="520" cy="34" r="8" fill="#2f8f5b"/>
-      </svg><div class="sd-cap">Gom nhóm: phiếu giống nhau cụm lại (Gower + Agglomerative)</div></div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gom nhom Gower Agglomerative">
+        <ellipse class="a1-bubble1" cx="120" cy="58" rx="70" ry="38" fill="#e9f3ec" stroke="#2f8f5b" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <ellipse class="a1-bubble2" cx="430" cy="58" rx="120" ry="40" fill="#e8f0f8" stroke="#3a6ea5" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <line class="a1-ruler1" x1="78" y1="48" x2="158" y2="48" stroke="#8a847c" stroke-width="1.2" stroke-dasharray="3 2"/>
+        <text class="a1-lblA" x="100" y="38" font-size="10" fill="#23201c">Gower d=0.15</text>
+        <line class="a1-ruler2" x1="78" y1="62" x2="350" y2="86" stroke="#8a847c" stroke-width="1.2" stroke-dasharray="3 2"/>
+        <text class="a1-lblB" x="200" y="98" font-size="10" fill="#cf5b52">d=0.74</text>
+        <g class="a1-card a1-c1 a1-blinkAB"><rect x="60" y="40" width="40" height="30" rx="5" fill="#fbeee7" stroke="#e7e1d8"/><text x="80" y="54" font-size="10" fill="#23201c" text-anchor="middle">A</text><circle cx="71" cy="63" r="4" fill="#c2603f"/><circle cx="89" cy="63" r="6" fill="#c98a2e"/></g>
+        <g class="a1-card a1-c2 a1-blinkAB"><rect x="118" y="40" width="40" height="30" rx="5" fill="#fbeee7" stroke="#e7e1d8"/><text x="138" y="54" font-size="10" fill="#23201c" text-anchor="middle">B</text><circle cx="129" cy="63" r="4" fill="#c2603f"/><circle cx="147" cy="63" r="5" fill="#c98a2e"/></g>
+        <g class="a1-card a1-c3"><rect x="360" y="34" width="40" height="30" rx="5" fill="#fbeee7" stroke="#e7e1d8"/><text x="380" y="48" font-size="10" fill="#23201c" text-anchor="middle">C</text><circle cx="371" cy="57" r="5" fill="#3a6ea5"/><circle cx="389" cy="57" r="4" fill="#2f8f5b"/></g>
+        <g class="a1-card a1-c4"><rect x="418" y="40" width="40" height="30" rx="5" fill="#fbeee7" stroke="#e7e1d8"/><text x="438" y="54" font-size="10" fill="#23201c" text-anchor="middle">D</text><circle cx="429" cy="63" r="6" fill="#3a6ea5"/><circle cx="447" cy="63" r="4" fill="#2f8f5b"/></g>
+        <g class="a1-card a1-c5"><rect x="476" y="34" width="40" height="30" rx="5" fill="#fbeee7" stroke="#e7e1d8"/><text x="496" y="48" font-size="10" fill="#23201c" text-anchor="middle">E</text><circle cx="487" cy="57" r="4" fill="#3a6ea5"/><circle cx="505" cy="57" r="6" fill="#2f8f5b"/></g>
+        <g class="a1-card a1-c6"><rect x="320" y="58" width="40" height="30" rx="5" fill="#fbeee7" stroke="#e7e1d8"/><text x="340" y="72" font-size="10" fill="#23201c" text-anchor="middle">F</text><circle cx="331" cy="81" r="5" fill="#3a6ea5"/><circle cx="349" cy="81" r="4" fill="#2f8f5b"/></g>
+        <line class="a1-merge1" x1="100" y1="55" x2="118" y2="55" stroke="#2f8f5b" stroke-width="2"/>
+        <line class="a1-merge2" x1="458" y1="55" x2="476" y2="50" stroke="#3a6ea5" stroke-width="2"/>
+        <text class="a1-result" x="120" y="106" font-size="11" fill="#2f8f5b" text-anchor="middle" font-weight="500">Cụm 1</text>
+        <text class="a1-result" x="430" y="108" font-size="11" fill="#3a6ea5" text-anchor="middle" font-weight="500">Cụm 2</text>
+        <text class="a1-result" x="293" y="16" font-size="11" fill="#2f8f5b" text-anchor="middle">cohesion ✓</text>
+      </svg><div class="sd-cap">Gom nhóm: đo độ giống (Gower) → gộp cặp gần nhất dần (Agglomerative)</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s3">3</span><b>Tạo Picking List — tối ưu đường đi</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Với mỗi picklist nhiều ô, tìm <b>thứ tự ghé ô ngắn nhất</b> (giảm quãng đi bộ — chi phí lớn nhất trong kho).</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank" rel="noopener">Bài toán người giao hàng (TSP)</a>: ≤12 ô dùng <a class="algo-a" href="https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm" target="_blank" rel="noopener">Held–Karp</a> (tối ưu tuyệt đối); nhiều ô hơn dùng <a class="algo-a" href="https://en.wikipedia.org/wiki/2-opt" target="_blank" rel="noopener">Láng giềng gần + 2-opt</a>.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Với phiếu nhiều ô, agent <b>rút ngắn quãng đi</b> so với thứ tự pick hiện tại — đảm bảo never-worse. Mức rút ngắn cụ thể đo trên Demo theo từng kho.</div>
-      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
-        <circle cx="30" cy="80" r="12" fill="#23201c"/><text x="30" y="84" text-anchor="middle" font-size="9" fill="#fff">I/O</text>
-        <g fill="#2f8f5b"><circle cx="110" cy="28" r="6"/><circle cx="190" cy="68" r="6"/><circle cx="280" cy="24" r="6"/><circle cx="360" cy="62" r="6"/><circle cx="450" cy="30" r="6"/><circle cx="540" cy="58" r="6"/></g>
-        <polyline class="rt-path" style="--len:760px" points="30,80 110,28 190,68 280,24 360,62 450,30 540,58" fill="none" stroke="#2f8f5b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg><div class="sd-cap">Tối ưu đường đi: vẽ thứ tự ghé ô ngắn nhất (TSP)</div></div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dinh tuyen TSP NN va 2-opt">
+        <polyline class="a2-nn" points="70,60 150,40 230,80 200,40 360,75 300,40 470,70" fill="none" stroke="#c98a2e" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <line class="a2-cross" x1="230" y1="80" x2="200" y2="40" stroke="#cf5b52" stroke-width="3"/>
+        <line class="a2-cross" x1="360" y1="75" x2="300" y2="40" stroke="#cf5b52" stroke-width="3"/>
+        <polyline class="a2-opt" points="70,60 150,40 200,40 300,40 230,80 360,75 470,70" fill="none" stroke="#2f8f5b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <rect x="60" y="50" width="20" height="20" rx="3" fill="#23201c"/><text x="70" y="86" font-size="9" fill="#23201c" text-anchor="middle">I/O</text>
+        <circle class="a2-node a2-n1" cx="150" cy="40" r="6" fill="#3a6ea5"/><circle class="a2-node a2-n2" cx="230" cy="80" r="6" fill="#3a6ea5"/><circle class="a2-node a2-n3" cx="200" cy="40" r="6" fill="#3a6ea5"/><circle class="a2-node a2-n4" cx="360" cy="75" r="6" fill="#3a6ea5"/><circle class="a2-node a2-n5" cx="300" cy="40" r="6" fill="#3a6ea5"/><circle class="a2-node a2-n6" cx="470" cy="70" r="6" fill="#3a6ea5"/>
+        <text class="a2-lblNN" x="520" y="44" font-size="11" fill="#c98a2e" text-anchor="middle" font-weight="500">NN</text>
+        <text class="a2-lblOpt" x="300" y="106" font-size="11" fill="#cf5b52" text-anchor="middle">2-opt: gỡ chéo</text>
+        <text class="a2-lblDone" x="520" y="70" font-size="11" fill="#2f8f5b" text-anchor="middle" font-weight="500">tối ưu</text>
+      </svg><div class="sd-cap">Định tuyến: chọn ô gần nhất → 2-opt gỡ cạnh chéo → tuyến ngắn hơn</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s4">4</span><b>Broadcast — phát lệnh KHÔNG bỏ sót</b></div>
-      <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Phát <b>mọi</b> picklist cho 45 nhân viên (<b>phủ 100%</b>). Gán đúng người (khu quen + tốc độ + cân tải). Người đang đủ tay → picklist mới vào <b>hàng chờ xếp theo khẩn cấp</b>. Mô phỏng thời gian hoàn tất (ETA) để cuốn chiếu.</div>
+      <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Phát <b>mọi</b> picklist cho đội nhân viên (<b>phủ 100%</b>). Gán đúng người (khu quen + tốc độ + cân tải). Người đang đủ tay → picklist mới vào <b>hàng chờ xếp theo khẩn cấp</b>. Mô phỏng thời gian hoàn tất (ETA) để cuốn chiếu.</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/Hungarian_algorithm" target="_blank" rel="noopener">Hungarian (gán tối ưu)</a> + <a class="algo-a" href="https://en.wikipedia.org/wiki/List_scheduling" target="_blank" rel="noopener">lập lịch cuốn chiếu ưu-tiên (list scheduling)</a>.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Phát <b>mọi</b> picklist cho đội nhân viên (<b>0 sót</b>); số chạy song song theo sức chứa, phần còn lại vào hàng chờ cuốn chiếu theo khẩn cấp; mọi picklist khẩn được giao sớm.</div>
-      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
-        <g font-size="10" fill="#8a847c"><text x="60" y="13">Picklist</text><text x="452" y="13">Nhân viên</text></g>
-        <g><rect x="58" y="22" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/><rect x="58" y="46" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/><rect x="58" y="70" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/></g>
-        <g><rect x="458" y="22" width="84" height="18" rx="5" fill="#e9f3ec" stroke="#bfe3cd"/><rect x="458" y="46" width="84" height="18" rx="5" fill="#e9f3ec" stroke="#bfe3cd"/><rect x="458" y="70" width="84" height="18" rx="5" fill="#e9f3ec" stroke="#bfe3cd"/></g>
-        <path class="as-line" style="--len:420px" d="M142 31 L458 55" stroke="#3a6fb0" stroke-width="2.4" fill="none"/>
-        <path class="as-line" style="--len:420px;animation-delay:.5s" d="M142 55 L458 31" stroke="#3a6fb0" stroke-width="2.4" fill="none"/>
-        <path class="as-line" style="--len:320px;animation-delay:1s" d="M142 79 L458 79" stroke="#3a6fb0" stroke-width="2.4" fill="none"/>
-      </svg><div class="sd-cap">Phân công tối ưu: gán picklist ↔ đúng nhân viên (Hungarian)</div></div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gan toi uu Hungarian">
+        <g class="a3-grid">
+          <text x="250" y="20" font-size="10" fill="#3a6ea5" text-anchor="middle">W1</text><text x="300" y="20" font-size="10" fill="#3a6ea5" text-anchor="middle">W2</text><text x="350" y="20" font-size="10" fill="#3a6ea5" text-anchor="middle">W3</text>
+          <text x="212" y="44" font-size="10" fill="#c2603f" text-anchor="middle">P1</text><text x="212" y="69" font-size="10" fill="#c2603f" text-anchor="middle">P2</text><text x="212" y="94" font-size="10" fill="#c2603f" text-anchor="middle">P3</text>
+          <rect x="228" y="28" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/><rect x="278" y="28" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/><rect x="328" y="28" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/>
+          <rect x="228" y="53" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/><rect x="278" y="53" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/><rect x="328" y="53" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/>
+          <rect x="228" y="78" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/><rect x="278" y="78" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/><rect x="328" y="78" width="44" height="22" rx="3" fill="#fbeee7" stroke="#e7e1d8"/>
+          <text x="250" y="43" font-size="10" fill="#23201c" text-anchor="middle">8</text><text x="300" y="43" font-size="10" fill="#23201c" text-anchor="middle">5</text><text x="350" y="43" font-size="10" fill="#23201c" text-anchor="middle">9</text>
+          <text x="250" y="68" font-size="10" fill="#23201c" text-anchor="middle">7</text><text x="300" y="68" font-size="10" fill="#23201c" text-anchor="middle">6</text><text x="350" y="68" font-size="10" fill="#23201c" text-anchor="middle">4</text>
+          <text x="250" y="93" font-size="10" fill="#23201c" text-anchor="middle">3</text><text x="300" y="93" font-size="10" fill="#23201c" text-anchor="middle">8</text><text x="350" y="93" font-size="10" fill="#23201c" text-anchor="middle">7</text>
+        </g>
+        <g class="a3-zeroR">
+          <rect x="278" y="28" width="44" height="22" rx="3" fill="#e9f3ec" stroke="#2f8f5b" stroke-width="1.5"/><rect x="328" y="53" width="44" height="22" rx="3" fill="#e9f3ec" stroke="#2f8f5b" stroke-width="1.5"/><rect x="228" y="78" width="44" height="22" rx="3" fill="#e9f3ec" stroke="#2f8f5b" stroke-width="1.5"/>
+          <text x="300" y="43" font-size="10" fill="#2f8f5b" text-anchor="middle" font-weight="500">0</text><text x="350" y="68" font-size="10" fill="#2f8f5b" text-anchor="middle" font-weight="500">0</text><text x="250" y="93" font-size="10" fill="#2f8f5b" text-anchor="middle" font-weight="500">0</text>
+        </g>
+        <g class="a3-zeroC"><rect x="226" y="26" width="48" height="76" rx="3" fill="#3a6ea5" opacity="0.10"/><rect x="276" y="26" width="48" height="76" rx="3" fill="#3a6ea5" opacity="0.10"/><rect x="326" y="26" width="48" height="76" rx="3" fill="#3a6ea5" opacity="0.10"/></g>
+        <g class="a3-pick"><circle cx="300" cy="39" r="13" fill="none" stroke="#c2603f" stroke-width="2"/><circle cx="350" cy="64" r="13" fill="none" stroke="#c2603f" stroke-width="2"/><circle cx="250" cy="89" r="13" fill="none" stroke="#c2603f" stroke-width="2"/></g>
+        <line class="a3-link" x1="218" y1="39" x2="300" y2="14" stroke="#c2603f" stroke-width="1.5"/><line class="a3-link" x1="218" y1="64" x2="350" y2="14" stroke="#c2603f" stroke-width="1.5"/><line class="a3-link" x1="218" y1="89" x2="250" y2="14" stroke="#c2603f" stroke-width="1.5"/>
+        <text class="a3-lblRow" x="450" y="45" font-size="11" fill="#2f8f5b" text-anchor="middle">− min hàng</text>
+        <text class="a3-lblCol" x="450" y="45" font-size="11" fill="#3a6ea5" text-anchor="middle">− min cột</text>
+        <text class="a3-lblDone" x="470" y="70" font-size="10" fill="#c2603f" text-anchor="middle" font-weight="500">tổng chi phí nhỏ nhất</text>
+      </svg><div class="sd-cap">Gán tối ưu: trừ hàng → trừ cột → ghép 0 (chi phí nhỏ nhất)</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s5">5</span><b>Tổng Kết — đo &amp; cảnh báo rủi ro</b></div>
@@ -532,14 +632,17 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Gợi ý ô mới cho từng SKU theo lớp (gần cửa nếu lấy nhiều), tôn trọng ràng buộc kho (chủ hàng · nhóm cỡ · số SKU/ô). Áp cho cả hàng PO mới về (putaway).</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://doi.org/10.1287/mnsc.22.6.629" target="_blank" rel="noopener">Bố trí theo lớp — class-based (Hausman 1976)</a>.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Hàng mới về cất ngay đúng chỗ; hàng tồn lệch chỗ được dời dần → kho luôn tối ưu.</div>
-      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
-        <circle cx="34" cy="50" r="15" fill="#23201c"/><text x="34" y="54" text-anchor="middle" font-size="9" fill="#fff">I/O</text>
-        <rect x="70" y="30" width="150" height="40" rx="8" fill="#e9f3ec" stroke="#bfe3cd"/><text x="145" y="55" text-anchor="middle" font-size="11" fill="#2f8f5b">gần</text>
-        <rect x="232" y="30" width="150" height="40" rx="8" fill="#fbf0dc" stroke="#ecd9b3"/>
-        <rect x="394" y="30" width="180" height="40" rx="8" fill="#f1efec" stroke="#ddd7cd"/>
-        <path d="M510 78 Q300 110 130 70" fill="none" stroke="#c2603f" stroke-width="1.6" stroke-dasharray="4 4"/>
-        <g class="mv-item" style="--mx:-390px;--my:0px"><circle cx="520" cy="50" r="13" fill="#cf5b52"/><text x="520" y="54" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">🔥</text></g>
-      </svg><div class="sd-cap">Đề xuất: dời SKU nóng về gần cửa xuất (class-based)</div></div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Slotting COI dong slot">
+        <rect x="100" y="44" width="86" height="40" rx="4" fill="#fbeee7" stroke="#e7e1d8"/><rect x="196" y="44" width="86" height="40" rx="4" fill="#fbeee7" stroke="#e7e1d8"/><rect x="292" y="44" width="86" height="40" rx="4" fill="#fbeee7" stroke="#e7e1d8"/><rect x="388" y="44" width="86" height="40" rx="4" fill="#fbeee7" stroke="#e7e1d8"/>
+        <rect x="60" y="40" width="24" height="48" rx="3" fill="#23201c"/><text x="72" y="100" font-size="9" fill="#23201c" text-anchor="middle">cửa</text><text x="143" y="100" font-size="8" fill="#8a847c" text-anchor="middle">gần</text><text x="431" y="100" font-size="8" fill="#8a847c" text-anchor="middle">xa</text>
+        <g class="a6-skuA"><rect x="412" y="50" width="38" height="20" rx="4" fill="#c2603f"/><text x="431" y="64" font-size="9" fill="#fbeee7" text-anchor="middle">A</text><rect x="420" y="74" width="22" height="8" rx="1" fill="#2f8f5b"/></g>
+        <g class="a6-sku"><rect x="220" y="50" width="38" height="20" rx="4" fill="#c98a2e"/><text x="239" y="64" font-size="9" fill="#23201c" text-anchor="middle">B</text><rect x="228" y="74" width="14" height="8" rx="1" fill="#2f8f5b"/></g>
+        <g class="a6-skuC"><rect x="112" y="50" width="38" height="20" rx="4" fill="#3a6ea5"/><text x="131" y="64" font-size="9" fill="#fbeee7" text-anchor="middle">C</text><rect x="120" y="74" width="7" height="8" rx="1" fill="#2f8f5b"/></g>
+        <text class="a6-coi" x="431" y="38" font-size="9" fill="#c2603f" text-anchor="middle">A: COI thấp · lấy nhiều</text>
+        <text class="a6-coi" x="131" y="38" font-size="9" fill="#3a6ea5" text-anchor="middle">C: COI cao · lấy ít</text>
+        <text class="a6-coi" x="293" y="16" font-size="10" fill="#c98a2e" text-anchor="middle">COI = thể tích / số lần lấy</text>
+        <text class="a6-lblDone" x="293" y="16" font-size="11" fill="#2f8f5b" text-anchor="middle" font-weight="500">A về gần cửa · quãng đi ↓</text>
+      </svg><div class="sd-cap">Đề xuất: tính COI → SKU lấy nhiều dời gần cửa, ít lấy ra xa (class-based)</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s5">5</span><b>Re-slot — đo lợi ích &amp; lịch tự động</b></div>
@@ -636,7 +739,17 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="ah"><div class="ic">📦</div><div><h4>Gom đơn thành cụm</h4><div class="tag">Clarke–Wright + VND + ILS</div></div></div>
       <div class="ab">
         <p>Gộp các đơn đi <b>chung đường</b> thành một chuyến để tiết kiệm quãng di chuyển (Order Batching). Dùng tiết kiệm Clarke–Wright kết hợp tìm kiếm lân cận (VND) và lặp tái khởi (ILS) — không bao giờ kém phương án tuần tự.</p>
-        <svg viewBox="0 0 380 64"><g fill="#b6ada0"><circle cx="30" cy="20" r="6"/><circle cx="30" cy="44" r="6"/><circle cx="60" cy="32" r="6"/></g><path d="M90 32 H120" stroke="#c2603f" stroke-width="2" marker-end="url(#arr)"/><rect x="130" y="14" width="90" height="36" rx="9" fill="#fbeee7" stroke="#eccdbd"/><text x="175" y="37" text-anchor="middle" font-size="11" fill="#c2603f">1 chuyến gộp</text><text x="260" y="37" font-size="11" fill="#2f8f5b" font-weight="700">ngắn hơn</text></svg>
+        <div class="sd-viz" style="border-top:none;background:transparent;padding:4px 0"><svg class="av" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Clarke-Wright savings batching">
+          <g class="a4-radial"><line x1="120" y1="60" x2="250" y2="28" stroke="#8a847c" stroke-width="1.3" stroke-dasharray="3 2"/><line x1="120" y1="60" x2="250" y2="92" stroke="#8a847c" stroke-width="1.3" stroke-dasharray="3 2"/></g>
+          <g class="a4-radial2"><line x1="120" y1="60" x2="400" y2="30" stroke="#8a847c" stroke-width="1.3" stroke-dasharray="3 2"/><line x1="120" y1="60" x2="400" y2="90" stroke="#8a847c" stroke-width="1.3" stroke-dasharray="3 2"/></g>
+          <polyline class="a4-merge1" points="120,60 250,28 250,92 120,60" fill="none" stroke="#2f8f5b" stroke-width="2.2" stroke-linejoin="round"/>
+          <polyline class="a4-merge2" points="120,60 400,30 400,90 120,60" fill="none" stroke="#3a6ea5" stroke-width="2.2" stroke-linejoin="round"/>
+          <rect x="108" y="50" width="22" height="22" rx="3" fill="#23201c"/><text x="119" y="88" font-size="9" fill="#23201c" text-anchor="middle">depot</text>
+          <circle class="a4-stop" cx="250" cy="28" r="6" fill="#c2603f"/><circle class="a4-stop" cx="250" cy="92" r="6" fill="#c2603f"/><circle class="a4-stop" cx="400" cy="30" r="6" fill="#c2603f"/><circle class="a4-stop" cx="400" cy="90" r="6" fill="#c2603f"/>
+          <text class="a4-saving" x="300" y="14" font-size="10" fill="#c98a2e" text-anchor="middle">s = d(0,i)+d(0,j)−d(i,j)</text>
+          <text class="a4-saving" x="268" y="64" font-size="10" fill="#c98a2e" text-anchor="middle" font-weight="500">s=14</text>
+          <text class="a4-lblDone" x="490" y="60" font-size="11" fill="#2f8f5b" text-anchor="middle" font-weight="500">ít chuyến hơn</text>
+        </svg><div class="sd-cap">Gom batch: tính saving gộp chung đường → gộp cặp lợi nhất</div></div>
         <span class="pill real">dữ liệu thật</span>
       </div>
       <div class="ab-app">💡 <b>Áp dụng:</b> gộp các đơn đi chung đường thành 1 chuyến → tiết kiệm quãng đi &amp; thời gian gom (mức cụ thể đo ở Demo theo từng kho).</div>
@@ -648,7 +761,20 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="ah"><div class="ic">🌊</div><div><h4>Xếp đợt thả theo SLA</h4><div class="tag">EDD — Earliest Due Date</div></div></div>
       <div class="ab">
         <p>Gom phiếu theo hạn giao thành các đợt thả (wave): phiếu sát hạn xử trước. Phiếu không đủ thời gian chuẩn bị được cảnh báo ngoại lệ ngay.</p>
-        <svg viewBox="0 0 380 56"><g font-size="10" fill="#fff" font-weight="700"><rect x="14" y="16" width="80" height="26" rx="7" fill="#cf5b52"/><text x="54" y="33" text-anchor="middle">gấp nhất</text><rect x="104" y="16" width="80" height="26" rx="7" fill="#c98a2e"/><text x="144" y="33" text-anchor="middle">gấp vừa</text><rect x="194" y="16" width="80" height="26" rx="7" fill="#2f8f5b"/><text x="234" y="33" text-anchor="middle">thường</text></g><path d="M284 29 H320" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><text x="350" y="33" font-size="10" fill="#8a847c" text-anchor="middle">đợt thả</text></svg>
+        <div class="sd-viz" style="border-top:none;background:transparent;padding:4px 0"><svg class="av" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Wave EDD sap theo han giao">
+          <rect class="a5-wave" x="30" y="44" width="242" height="36" rx="6" fill="none" stroke="#3a6ea5" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <rect class="a5-wave" x="294" y="44" width="146" height="36" rx="6" fill="none" stroke="#3a6ea5" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text class="a5-wave" x="151" y="38" font-size="10" fill="#3a6ea5" text-anchor="middle">đợt thả 1</text>
+          <text class="a5-wave" x="367" y="38" font-size="10" fill="#3a6ea5" text-anchor="middle">đợt thả 2</text>
+          <g class="a5-s1"><rect x="40" y="50" width="44" height="24" rx="5" fill="#fbeee7" stroke="#c98a2e"/><text x="62" y="66" font-size="11" fill="#23201c" text-anchor="middle">5h</text></g>
+          <g class="a5-s2"><rect x="128" y="50" width="44" height="24" rx="5" fill="#fbeee7" stroke="#c98a2e"/><text x="150" y="66" font-size="11" fill="#23201c" text-anchor="middle">2h</text></g>
+          <g class="a5-s3"><rect x="216" y="50" width="44" height="24" rx="5" fill="#fbeee7" stroke="#c98a2e"/><text x="238" y="66" font-size="11" fill="#23201c" text-anchor="middle">8h</text></g>
+          <g class="a5-s4"><rect x="304" y="50" width="44" height="24" rx="5" fill="#fbeee7" stroke="#c98a2e"/><text x="326" y="66" font-size="11" fill="#23201c" text-anchor="middle">1h</text></g>
+          <g class="a5-s5"><rect x="392" y="50" width="44" height="24" rx="5" fill="#fbeee7" stroke="#c98a2e"/><text x="414" y="66" font-size="11" fill="#23201c" text-anchor="middle">3h</text></g>
+          <rect class="a5-late" x="40" y="50" width="44" height="24" rx="5" fill="none" stroke="#cf5b52" stroke-width="2"/>
+          <text class="a5-lblLate" x="62" y="98" font-size="10" fill="#cf5b52" text-anchor="middle" font-weight="500">⚠ sát hạn</text>
+          <text class="a5-lblSort" x="300" y="108" font-size="11" fill="#3a6ea5" text-anchor="middle">sort theo hạn (EDD)</text>
+        </svg><div class="sd-cap">Wave: sắp theo hạn giao gần nhất (EDD) → chia đợt thả</div></div>
         <span class="pill">dữ liệu SLA: cần webhook OMS</span>
       </div>
       <div class="ab-app">💡 <b>Áp dụng:</b> xếp phiếu thành các đợt thả theo hạn giao gần nhất; cần webhook OMS để có hạn giao thật (hiện chạy trên SLA mẫu).</div>
@@ -671,7 +797,7 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
     <div class="algo-card">
       <div class="ah"><div class="ic">📡</div><div><h4>Phát lệnh không bỏ sót &amp; cảnh báo trễ</h4><div class="tag">Event-sim cuốn chiếu + Hungarian</div></div></div>
       <div class="ab">
-        <p>Xếp lịch <b>mọi</b> picklist cho 45 nhân viên đảm bảo <b>phủ 100%</b> (không sót cái nào). Mô phỏng thời gian hoàn tất (ETA = số item × tốc-độ thật + di-chuyển) → người đủ tay thì picklist mới vào <b>hàng chờ theo khẩn cấp</b>; phát hiện quá tải → cảnh báo phiếu nguy cơ lỡ bàn giao → rơi backlog ngày mai.</p>
+        <p>Xếp lịch <b>mọi</b> picklist cho đội nhân viên đảm bảo <b>phủ 100%</b> (không sót cái nào). Mô phỏng thời gian hoàn tất (ETA = số item × tốc-độ thật + di-chuyển) → người đủ tay thì picklist mới vào <b>hàng chờ theo khẩn cấp</b>; phát hiện quá tải → cảnh báo phiếu nguy cơ lỡ bàn giao → rơi backlog ngày mai.</p>
         <svg viewBox="0 0 380 60"><g font-size="10" fill="#55504a"><text x="14" y="16">mọi picklist</text></g><rect x="14" y="24" width="120" height="20" rx="6" fill="#e8f0f8" stroke="#c5d8ea"/><text x="74" y="38" text-anchor="middle" font-size="10" fill="#3a6ea5">đội NV · phủ 100%</text><path d="M140 34 H168" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="174" y="24" width="96" height="20" rx="6" fill="#fbf0dc" stroke="#ecd9b3"/><text x="222" y="38" text-anchor="middle" font-size="10" fill="#c98a2e">hàng chờ (khẩn)</text><path d="M276 34 H304" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="310" y="24" width="60" height="20" rx="6" fill="#f7e6e3" stroke="#e6c0b8"/><text x="340" y="38" text-anchor="middle" font-size="10" fill="#c0564a">rủi ro trễ</text></svg>
         <span class="pill real">dữ liệu thật</span>
       </div>
