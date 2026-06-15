@@ -390,7 +390,7 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="sd-h"><span class="sd-n s2">2</span><b>Gom Nhóm — cụm phiếu giống nhau</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Cụm các phiếu tương đồng (cùng chủ hàng · khu · cỡ · loại) để pick 1 lượt; tách nhóm <b>gấp/ưu tiên cao</b> ra xử trước (nhóm bắt buộc).</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://doi.org/10.2307/2528823" target="_blank" rel="noopener">Khoảng cách Gower</a> có trọng số (đo độ giống trên tiêu chí hỗn hợp) + gộp cụm dần <a class="algo-a" href="https://en.wikipedia.org/wiki/Ward%27s_method" target="_blank" rel="noopener">Agglomerative (Ward)</a>.</div>
-      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>1.200 phiếu → ~10 nhóm. <b>Trọng số chỉnh realtime</b>: kéo "chủ hàng" nặng → cụm theo chủ; kéo "khu" nặng → cụm theo zone — cụm đổi ngay.</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Backlog 1.659 phiếu → cụm thành ~10 nhóm đại diện (clustering minh hoạ trên mẫu vì độ phức tạp O(n³); phát lệnh phủ 100% backlog ở bước Broadcast). <b>Trọng số chỉnh realtime</b>: kéo "chủ hàng" nặng → cụm theo chủ; kéo "khu" nặng → cụm theo zone — cụm đổi ngay.</div>
       <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
         <ellipse class="cl-ring" cx="175" cy="52" rx="80" ry="40" fill="#fbeee7" stroke="#eccdbd"/>
         <ellipse class="cl-ring" cx="425" cy="50" rx="74" ry="38" fill="#e9f3ec" stroke="#bfe3cd"/>
@@ -420,7 +420,7 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="sd-h"><span class="sd-n s4">4</span><b>Broadcast — phát lệnh KHÔNG bỏ sót</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Phát <b>mọi</b> picklist cho 45 nhân viên (<b>phủ 100%</b>). Gán đúng người (khu quen + tốc độ + cân tải). Người đang đủ tay → picklist mới vào <b>hàng chờ xếp theo khẩn cấp</b>. Mô phỏng thời gian hoàn tất (ETA) để cuốn chiếu.</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/Hungarian_algorithm" target="_blank" rel="noopener">Hungarian (gán tối ưu)</a> + <a class="algo-a" href="https://en.wikipedia.org/wiki/List_scheduling" target="_blank" rel="noopener">lập lịch cuốn chiếu ưu-tiên (list scheduling)</a>.</div>
-      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>1.200 picklist → 45 người, <b>0 sót</b>; hàng chờ 1.155 cuốn chiếu trong ~1,6 h; mọi picklist khẩn được giao sớm.</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>1.659 picklist → 45 người, <b>0 sót</b>; 45 picklist chạy song song, phần còn lại vào hàng chờ cuốn chiếu hết trong ~2 h; mọi picklist khẩn được giao sớm.</div>
       <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
         <g font-size="10" fill="#8a847c"><text x="60" y="13">Picklist</text><text x="452" y="13">Nhân viên</text></g>
         <g><rect x="58" y="22" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/><rect x="58" y="46" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/><rect x="58" y="70" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/></g>
@@ -434,7 +434,7 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="sd-h"><span class="sd-n s5">5</span><b>Tổng Kết — đo &amp; cảnh báo rủi ro</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>So sánh Agent ⟷ thủ công (cùng hệ quy chiếu). Từ lịch ETA → <b>phát hiện nguy cơ trễ</b>: nhân viên quá tải, hoặc picklist lỡ mốc bàn giao ĐVVC → rơi backlog ngày mai. Lập 2 danh sách rủi ro.</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span>Benchmark cùng hệ quy chiếu + suy luận rủi ro từ lịch ETA (mô phỏng sức chứa ca).</div>
-      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Báo trung thực: 45 người/8 h <b>đủ năng lực</b> clear 1.200 phiếu trong 1,6 h → 0 quá tải; cơ chế tự bật danh sách khi tải vượt sức chứa (mùa cao điểm).</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Báo trung thực: 45 người/8 h <b>đủ năng lực</b> clear 1.659 phiếu trong ~2 h (tải ~18%) → 0 quá tải; cơ chế tự bật danh sách khi tải vượt sức chứa (mùa cao điểm).</div>
       <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
         <text x="14" y="33" font-size="11" fill="#8a847c">👤 Thủ công</text>
         <rect x="130" y="22" width="420" height="20" rx="5" fill="#d8d2c6"/>
@@ -597,9 +597,9 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
   <div class="grid2">
     <!-- grouping -->
     <div class="algo-card">
-      <div class="ah"><div class="ic">🧩</div><div><h4>Gom nhóm đơn</h4><div class="tag">Weighted Gower + Agglomerative</div></div></div>
+      <div class="ah"><div class="ic">🧩</div><div><h4>Gom nhóm phiếu</h4><div class="tag">Weighted Gower + Agglomerative</div></div></div>
       <div class="ab">
-        <p>Đo độ khác biệt giữa 2 đơn trên nhiều tiêu chí hỗn hợp (vừa định tính vừa định lượng) bằng <b>khoảng cách Gower có trọng số</b>, rồi gộp cụm dần theo phương pháp Ward đến khi nhóm đủ chặt.</p>
+        <p>Đo độ khác biệt giữa 2 phiếu trên nhiều tiêu chí hỗn hợp (vừa định tính vừa định lượng) bằng <b>khoảng cách Gower có trọng số</b>, rồi gộp cụm dần theo phương pháp Ward đến khi nhóm đủ chặt.</p>
         <svg viewBox="0 0 380 64"><g><circle cx="30" cy="32" r="8" fill="#c2603f"/><circle cx="60" cy="20" r="8" fill="#c2603f"/><circle cx="55" cy="46" r="8" fill="#c2603f"/></g><path d="M95 32 H125" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="135" y="14" width="60" height="36" rx="9" fill="#fbeee7" stroke="#eccdbd"/><text x="165" y="37" text-anchor="middle" font-size="11" fill="#c2603f">cụm 1</text><rect x="215" y="14" width="60" height="36" rx="9" fill="#e9f3ec" stroke="#bfe3cd"/><text x="245" y="37" text-anchor="middle" font-size="11" fill="#2f8f5b">cụm 2</text><rect x="295" y="14" width="60" height="36" rx="9" fill="#e8f0f8" stroke="#c5d8ea"/><text x="325" y="37" text-anchor="middle" font-size="11" fill="#3a6ea5">cụm 3</text></svg>
         <span class="pill real">dữ liệu thật</span>
       </div>
@@ -647,11 +647,11 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
     <div class="algo-card">
       <div class="ah"><div class="ic">🌊</div><div><h4>Xếp đợt thả theo SLA</h4><div class="tag">EDD — Earliest Due Date</div></div></div>
       <div class="ab">
-        <p>Gom đơn theo hạn giao thành các đợt thả (wave): đơn sát hạn xử trước. Đơn không đủ thời gian chuẩn bị được cảnh báo ngoại lệ ngay.</p>
+        <p>Gom phiếu theo hạn giao thành các đợt thả (wave): phiếu sát hạn xử trước. Phiếu không đủ thời gian chuẩn bị được cảnh báo ngoại lệ ngay.</p>
         <svg viewBox="0 0 380 56"><g font-size="10" fill="#fff" font-weight="700"><rect x="14" y="16" width="80" height="26" rx="7" fill="#cf5b52"/><text x="54" y="33" text-anchor="middle">gấp nhất</text><rect x="104" y="16" width="80" height="26" rx="7" fill="#c98a2e"/><text x="144" y="33" text-anchor="middle">gấp vừa</text><rect x="194" y="16" width="80" height="26" rx="7" fill="#2f8f5b"/><text x="234" y="33" text-anchor="middle">thường</text></g><path d="M284 29 H320" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><text x="350" y="33" font-size="10" fill="#8a847c" text-anchor="middle">đợt thả</text></svg>
         <span class="pill">dữ liệu SLA: cần webhook OMS</span>
       </div>
-      <div class="ab-app">💡 <b>Áp dụng:</b> xếp đơn thành các đợt thả theo hạn giao gần nhất; cần webhook OMS để có hạn giao thật (hiện chạy trên SLA mẫu).</div>
+      <div class="ab-app">💡 <b>Áp dụng:</b> xếp phiếu thành các đợt thả theo hạn giao gần nhất; cần webhook OMS để có hạn giao thật (hiện chạy trên SLA mẫu).</div>
       <div class="src">📚 <a class="algo-a" href="https://en.wikipedia.org/wiki/Earliest_deadline_first_scheduling" target="_blank" rel="noopener">Jackson / EDD (1955)</a> · Pinedo — Scheduling (2016)</div>
     </div>
 
@@ -672,7 +672,7 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="ah"><div class="ic">📡</div><div><h4>Phát lệnh không bỏ sót &amp; cảnh báo trễ</h4><div class="tag">Event-sim cuốn chiếu + Hungarian</div></div></div>
       <div class="ab">
         <p>Xếp lịch <b>mọi</b> picklist cho 45 nhân viên đảm bảo <b>phủ 100%</b> (không sót cái nào). Mô phỏng thời gian hoàn tất (ETA = số item × tốc-độ thật + di-chuyển) → người đủ tay thì picklist mới vào <b>hàng chờ theo khẩn cấp</b>; phát hiện quá tải → cảnh báo phiếu nguy cơ lỡ bàn giao → rơi backlog ngày mai.</p>
-        <svg viewBox="0 0 380 60"><g font-size="10" fill="#55504a"><text x="14" y="16">1.200 picklist</text></g><rect x="14" y="24" width="120" height="20" rx="6" fill="#e8f0f8" stroke="#c5d8ea"/><text x="74" y="38" text-anchor="middle" font-size="10" fill="#3a6ea5">45 NV · phủ 100%</text><path d="M140 34 H168" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="174" y="24" width="96" height="20" rx="6" fill="#fbf0dc" stroke="#ecd9b3"/><text x="222" y="38" text-anchor="middle" font-size="10" fill="#c98a2e">hàng chờ (khẩn)</text><path d="M276 34 H304" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="310" y="24" width="60" height="20" rx="6" fill="#f7e6e3" stroke="#e6c0b8"/><text x="340" y="38" text-anchor="middle" font-size="10" fill="#c0564a">rủi ro trễ</text></svg>
+        <svg viewBox="0 0 380 60"><g font-size="10" fill="#55504a"><text x="14" y="16">1.659 picklist</text></g><rect x="14" y="24" width="120" height="20" rx="6" fill="#e8f0f8" stroke="#c5d8ea"/><text x="74" y="38" text-anchor="middle" font-size="10" fill="#3a6ea5">45 NV · phủ 100%</text><path d="M140 34 H168" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="174" y="24" width="96" height="20" rx="6" fill="#fbf0dc" stroke="#ecd9b3"/><text x="222" y="38" text-anchor="middle" font-size="10" fill="#c98a2e">hàng chờ (khẩn)</text><path d="M276 34 H304" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="310" y="24" width="60" height="20" rx="6" fill="#f7e6e3" stroke="#e6c0b8"/><text x="340" y="38" text-anchor="middle" font-size="10" fill="#c0564a">rủi ro trễ</text></svg>
         <span class="pill real">dữ liệu thật</span>
       </div>
       <div class="ab-app">💡 <b>Áp dụng:</b> vá đúng lỗ hổng "picklist không phát đủ cho nhân viên" — không bỏ sót phiếu nào + 2 danh sách rủi ro trễ ở Tổng Kết (quá tải · rơi backlog mai).</div>
