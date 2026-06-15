@@ -125,6 +125,38 @@ a.algo-a:hover{text-decoration-color:#9a4a2e}
 @media(max-width:640px){.sd-r{flex-direction:column;gap:2px}.sd-k{width:auto}}
 .ab-app{margin:2px 0 10px;font-size:13px;color:#55504a;background:var(--accent-soft);border-radius:8px;padding:8px 11px;border-left:3px solid var(--accent-line)}
 .ab-app b{color:#9a4a2e}
+/* ── minh hoạ THUẬT TOÁN CHẠY (animation động) ── */
+.sd-viz{padding:13px 15px;background:#fbfaf8;border-top:1px solid var(--line)}
+.sd-viz svg{width:100%;height:104px;display:block;overflow:visible}
+.sd-cap{font-size:11px;color:var(--mut);text-align:center;margin-top:5px}
+.av *{transform-box:fill-box}
+/* clustering: dots di chuyển về cụm + vòng cụm hiện dần */
+@keyframes clMove{0%,14%{transform:translate(0,0)}55%,88%{transform:translate(var(--dx),var(--dy))}100%{transform:translate(0,0)}}
+.cl-dot{animation:clMove 5s ease-in-out infinite}
+@keyframes clRing{0%,32%{opacity:0;transform:scale(.6)}60%,88%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.6)}}
+.cl-ring{transform-origin:center;animation:clRing 5s ease-in-out infinite}
+/* TSP: vẽ tuyến tối ưu (line drawing) */
+@keyframes drawPath{0%{stroke-dashoffset:var(--len)}60%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+.rt-path{stroke-dasharray:var(--len);animation:drawPath 4.4s ease-in-out infinite}
+@keyframes dot-pop{0%,55%{r:4;opacity:.5}70%,82%{opacity:1}100%{r:4;opacity:.5}}
+/* Hungarian: nối picklist↔picker lần lượt */
+@keyframes drawLine{0%,8%{stroke-dashoffset:var(--len)}40%,100%{stroke-dashoffset:0}}
+.as-line{stroke-dasharray:var(--len);animation:drawLine 3.8s ease-out infinite}
+/* sort ưu tiên: chip dịch về đúng chỗ */
+@keyframes sortMove{0%,16%{transform:translateX(0)}52%,90%{transform:translateX(var(--tx))}100%{transform:translateX(0)}}
+.so-chip{animation:sortMove 4.2s ease-in-out infinite}
+/* bar mọc (ABC / benchmark) */
+@keyframes barGrow{0%{transform:scaleY(.04)}100%{transform:scaleY(1)}}
+.bar-g{transform-origin:bottom;animation:barGrow 1.6s ease-out infinite alternate}
+@keyframes barShrink{0%{transform:scaleX(1)}100%{transform:scaleX(var(--sx))}}
+.bar-x{transform-origin:left;animation:barShrink 1.8s ease-in-out infinite alternate}
+/* item dời xa→gần cửa */
+@keyframes moveNear{0%,14%{transform:translate(0,0)}55%,88%{transform:translate(var(--mx),var(--my))}100%{transform:translate(0,0)}}
+.mv-item{animation:moveNear 4.4s ease-in-out infinite}
+/* nhấp nháy "cần dời" */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.av-blink{animation:blink 1.1s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.cl-dot,.cl-ring,.rt-path,.as-line,.so-chip,.bar-g,.bar-x,.mv-item,.av-blink{animation:none}.cl-ring{opacity:1}.rt-path,.as-line{stroke-dashoffset:0}}
 
 /* table */
 table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0}
@@ -346,30 +378,70 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Đọc <b>toàn bộ</b> phiếu chờ pick từ Vietful (1.659 phiếu) + thuộc tính thật: SLA · ưu tiên · cỡ · chủ hàng · số ô · khu · serial/FEFO. Phiếu gấp / quá hạn nặng nhất xếp lên đầu.</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/Lexicographic_order" target="_blank" rel="noopener">Sắp xếp đa tiêu chí (lexicographic)</a> — theo thứ tự: bắt buộc → ưu tiên (Priority) → SLA quá hạn.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Mọi phiếu vào tầm ngắm, <b>không sót cái nào</b> — nền cho 4 bước sau. Trên data thật 100% phiếu đã quá hạn → xếp theo mức quá hạn.</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 70">
+        <g class="so-chip" style="--tx:318px"><rect x="6" y="20" width="96" height="30" rx="8" fill="#e9f3ec" stroke="#bfe3cd"/><text x="54" y="40" text-anchor="middle" font-size="12" fill="#2f8f5b">thường</text></g>
+        <g class="so-chip" style="--tx:-106px"><rect x="112" y="20" width="96" height="30" rx="8" fill="#f7e0dd" stroke="#e6b5ad"/><text x="160" y="40" text-anchor="middle" font-size="12" fill="#cf5b52" font-weight="700">⚡ gấp</text></g>
+        <g class="so-chip" style="--tx:0px"><rect x="218" y="20" width="96" height="30" rx="8" fill="#fbf0dc" stroke="#ecd9b3"/><text x="266" y="40" text-anchor="middle" font-size="12" fill="#c98a2e">vừa</text></g>
+        <g class="so-chip" style="--tx:106px"><rect x="324" y="20" width="96" height="30" rx="8" fill="#e9f3ec" stroke="#bfe3cd"/><text x="372" y="40" text-anchor="middle" font-size="12" fill="#2f8f5b">thường</text></g>
+        <g class="so-chip" style="--tx:-318px"><rect x="430" y="20" width="96" height="30" rx="8" fill="#f7e0dd" stroke="#e6b5ad"/><text x="478" y="40" text-anchor="middle" font-size="12" fill="#cf5b52" font-weight="700">⚡ gấp</text></g>
+      </svg><div class="sd-cap">Xếp ưu tiên: phiếu gấp (đỏ) dồn lên trước</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s2">2</span><b>Gom Nhóm — cụm phiếu giống nhau</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Cụm các phiếu tương đồng (cùng chủ hàng · khu · cỡ · loại) để pick 1 lượt; tách nhóm <b>gấp/ưu tiên cao</b> ra xử trước (nhóm bắt buộc).</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://doi.org/10.2307/2528823" target="_blank" rel="noopener">Khoảng cách Gower</a> có trọng số (đo độ giống trên tiêu chí hỗn hợp) + gộp cụm dần <a class="algo-a" href="https://en.wikipedia.org/wiki/Ward%27s_method" target="_blank" rel="noopener">Agglomerative (Ward)</a>.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>1.200 phiếu → ~10 nhóm. <b>Trọng số chỉnh realtime</b>: kéo "chủ hàng" nặng → cụm theo chủ; kéo "khu" nặng → cụm theo zone — cụm đổi ngay.</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <ellipse class="cl-ring" cx="175" cy="52" rx="80" ry="40" fill="#fbeee7" stroke="#eccdbd"/>
+        <ellipse class="cl-ring" cx="425" cy="50" rx="74" ry="38" fill="#e9f3ec" stroke="#bfe3cd"/>
+        <circle class="cl-dot" style="--dx:115px;--dy:12px" cx="55" cy="32" r="8" fill="#c2603f"/>
+        <circle class="cl-dot" style="--dx:62px;--dy:-22px" cx="120" cy="78" r="8" fill="#c2603f"/>
+        <circle class="cl-dot" style="--dx:135px;--dy:0px" cx="40" cy="58" r="8" fill="#c2603f"/>
+        <circle class="cl-dot" style="--dx:40px;--dy:18px" cx="150" cy="28" r="8" fill="#c2603f"/>
+        <circle class="cl-dot" style="--dx:88px;--dy:6px" cx="92" cy="50" r="8" fill="#c2603f"/>
+        <circle class="cl-dot" style="--dx:92px;--dy:14px" cx="320" cy="30" r="8" fill="#2f8f5b"/>
+        <circle class="cl-dot" style="--dx:-48px;--dy:-12px" cx="490" cy="68" r="8" fill="#2f8f5b"/>
+        <circle class="cl-dot" style="--dx:38px;--dy:-24px" cx="385" cy="82" r="8" fill="#2f8f5b"/>
+        <circle class="cl-dot" style="--dx:-78px;--dy:8px" cx="520" cy="34" r="8" fill="#2f8f5b"/>
+      </svg><div class="sd-cap">Gom nhóm: phiếu giống nhau cụm lại (Gower + Agglomerative)</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s3">3</span><b>Tạo Picking List — tối ưu đường đi</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Với mỗi picklist nhiều ô, tìm <b>thứ tự ghé ô ngắn nhất</b> (giảm quãng đi bộ — chi phí lớn nhất trong kho).</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank" rel="noopener">Bài toán người giao hàng (TSP)</a>: ≤12 ô dùng <a class="algo-a" href="https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm" target="_blank" rel="noopener">Held–Karp</a> (tối ưu tuyệt đối); nhiều ô hơn dùng <a class="algo-a" href="https://en.wikipedia.org/wiki/2-opt" target="_blank" rel="noopener">Láng giềng gần + 2-opt</a>.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Đo trên 1.063 phiếu THẬT: <b>quãng đi giảm 31%</b> so với thứ tự pick hiện tại của Vietful (win-rate 100%).</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <circle cx="30" cy="80" r="12" fill="#23201c"/><text x="30" y="84" text-anchor="middle" font-size="9" fill="#fff">I/O</text>
+        <g fill="#2f8f5b"><circle cx="110" cy="28" r="6"/><circle cx="190" cy="68" r="6"/><circle cx="280" cy="24" r="6"/><circle cx="360" cy="62" r="6"/><circle cx="450" cy="30" r="6"/><circle cx="540" cy="58" r="6"/></g>
+        <polyline class="rt-path" style="--len:760px" points="30,80 110,28 190,68 280,24 360,62 450,30 540,58" fill="none" stroke="#2f8f5b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg><div class="sd-cap">Tối ưu đường đi: vẽ thứ tự ghé ô ngắn nhất (TSP)</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s4">4</span><b>Broadcast — phát lệnh KHÔNG bỏ sót</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Phát <b>mọi</b> picklist cho 45 nhân viên (<b>phủ 100%</b>). Gán đúng người (khu quen + tốc độ + cân tải). Người đang đủ tay → picklist mới vào <b>hàng chờ xếp theo khẩn cấp</b>. Mô phỏng thời gian hoàn tất (ETA) để cuốn chiếu.</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/Hungarian_algorithm" target="_blank" rel="noopener">Hungarian (gán tối ưu)</a> + <a class="algo-a" href="https://en.wikipedia.org/wiki/List_scheduling" target="_blank" rel="noopener">lập lịch cuốn chiếu ưu-tiên (list scheduling)</a>.</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>1.200 picklist → 45 người, <b>0 sót</b>; hàng chờ 1.155 cuốn chiếu trong ~1,6 h; mọi picklist khẩn được giao sớm.</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <g font-size="10" fill="#8a847c"><text x="60" y="13">Picklist</text><text x="452" y="13">Nhân viên</text></g>
+        <g><rect x="58" y="22" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/><rect x="58" y="46" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/><rect x="58" y="70" width="84" height="18" rx="5" fill="#fbeee7" stroke="#eccdbd"/></g>
+        <g><rect x="458" y="22" width="84" height="18" rx="5" fill="#e9f3ec" stroke="#bfe3cd"/><rect x="458" y="46" width="84" height="18" rx="5" fill="#e9f3ec" stroke="#bfe3cd"/><rect x="458" y="70" width="84" height="18" rx="5" fill="#e9f3ec" stroke="#bfe3cd"/></g>
+        <path class="as-line" style="--len:420px" d="M142 31 L458 55" stroke="#3a6fb0" stroke-width="2.4" fill="none"/>
+        <path class="as-line" style="--len:420px;animation-delay:.5s" d="M142 55 L458 31" stroke="#3a6fb0" stroke-width="2.4" fill="none"/>
+        <path class="as-line" style="--len:320px;animation-delay:1s" d="M142 79 L458 79" stroke="#3a6fb0" stroke-width="2.4" fill="none"/>
+      </svg><div class="sd-cap">Phân công tối ưu: gán picklist ↔ đúng nhân viên (Hungarian)</div></div>
     </div>
     <div class="sd">
       <div class="sd-h"><span class="sd-n s5">5</span><b>Tổng Kết — đo &amp; cảnh báo rủi ro</b></div>
       <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>So sánh Agent ⟷ thủ công (cùng hệ quy chiếu). Từ lịch ETA → <b>phát hiện nguy cơ trễ</b>: nhân viên quá tải, hoặc picklist lỡ mốc bàn giao ĐVVC → rơi backlog ngày mai. Lập 2 danh sách rủi ro.</div>
       <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span>Benchmark cùng hệ quy chiếu + suy luận rủi ro từ lịch ETA (mô phỏng sức chứa ca).</div>
       <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Báo trung thực: 45 người/8 h <b>đủ năng lực</b> clear 1.200 phiếu trong 1,6 h → 0 quá tải; cơ chế tự bật danh sách khi tải vượt sức chứa (mùa cao điểm).</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <text x="14" y="33" font-size="11" fill="#8a847c">👤 Thủ công</text>
+        <rect x="130" y="22" width="420" height="20" rx="5" fill="#d8d2c6"/>
+        <text x="14" y="71" font-size="11" fill="#2f8f5b">🤖 Agent</text>
+        <rect class="bar-x" style="--sx:.69" x="130" y="60" width="420" height="20" rx="5" fill="#2f8f5b"/>
+        <text x="586" y="75" font-size="14" font-weight="800" fill="#2f8f5b" text-anchor="end" class="av-blink">−31%</text>
+      </svg><div class="sd-cap">Đo hiệu quả: Agent ngắn hơn 31% quãng đi (cùng hệ quy chiếu)</div></div>
     </div>
   </div>
 
@@ -412,7 +484,80 @@ footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
     <div class="fstep s5"><span class="n">5</span><h4>Re-slot</h4><p>Đo lợi ích dời hàng (ROI), cập nhật theo mùa vụ.</p><span class="algo">ROI move</span></div>
   </div>
 
-  <div class="grid2" style="margin-top:18px">
+  <h3>Agent AI làm gì ở từng bước — và bằng thuật toán nào</h3>
+  <p class="sec-sub">Mỗi bước có việc cụ thể + thuật toán đã kiểm chứng, kèm minh hoạ động cách thuật toán chạy.</p>
+
+  <div class="steps-detail">
+    <div class="sd">
+      <div class="sd-h"><span class="sd-n s1">1</span><b>Tồn kho — đọc dữ liệu nền</b></div>
+      <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Đọc vị trí từng SKU · tần suất lấy · quan hệ đi-cùng (affinity) từ lịch sử pick thật (11.945 ô · 6.593 lượt).</div>
+      <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span>Tổng hợp đặc trưng (ingest) — chưa tối ưu, là nền cho 4 bước sau.</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Mọi quyết định bố trí đều dựa số liệu THẬT, không đoán.</div>
+    </div>
+    <div class="sd">
+      <div class="sd-h"><span class="sd-n s2">2</span><b>ABC + COI — phân lớp tốc độ lấy</b></div>
+      <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Xếp hạng SKU theo tần suất lấy (lớp A/B/C) + tính chỉ số <b>COI</b> (khối-trên-lần-lấy): lấy nhiều &amp; gọn → ưu tiên gần cửa.</div>
+      <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://en.wikipedia.org/wiki/ABC_analysis" target="_blank" rel="noopener">Phân lớp ABC (Pareto)</a> + chỉ số COI (Heskett 1963).</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Lớp A (≈20% SKU, ≈80% lượt lấy) đặt sát cửa xuất → cắt phần lớn quãng đi.</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <line x1="14" y1="88" x2="586" y2="88" stroke="#ddd7cd" stroke-width="1"/>
+        <rect class="bar-g" style="animation-delay:0s" x="24" y="18" width="60" height="70" rx="4" fill="#2f8f5b"/>
+        <rect class="bar-g" style="animation-delay:.1s" x="96" y="30" width="60" height="58" rx="4" fill="#2f8f5b"/>
+        <rect class="bar-g" style="animation-delay:.2s" x="168" y="42" width="60" height="46" rx="4" fill="#2f8f5b"/>
+        <rect class="bar-g" style="animation-delay:.3s" x="240" y="52" width="60" height="36" rx="4" fill="#c98a2e"/>
+        <rect class="bar-g" style="animation-delay:.4s" x="312" y="62" width="60" height="26" rx="4" fill="#c98a2e"/>
+        <rect class="bar-g" style="animation-delay:.5s" x="384" y="70" width="60" height="18" rx="4" fill="#b6ada0"/>
+        <rect class="bar-g" style="animation-delay:.6s" x="456" y="76" width="60" height="12" rx="4" fill="#b6ada0"/>
+        <text x="84" y="99" text-anchor="middle" font-size="10" fill="#2f8f5b" font-weight="700">Lớp A — gần</text>
+        <text x="342" y="99" text-anchor="middle" font-size="10" fill="#c98a2e">Lớp B</text>
+        <text x="486" y="99" text-anchor="middle" font-size="10" fill="#8a847c">Lớp C — xa</text>
+      </svg><div class="sd-cap">Phân lớp ABC theo tần suất lấy (Pareto)</div></div>
+    </div>
+    <div class="sd">
+      <div class="sd-h"><span class="sd-n s3">3</span><b>Phát hiện — SKU nóng đang ở xa</b></div>
+      <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>So vị trí hiện tại với vị trí tối ưu (theo COI): SKU lấy nhiều nhưng nằm zone xa → đánh dấu cần kéo gần; cặp đi-cùng đang tách xa → cần gom.</div>
+      <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span>So khoảng cách thực tế vs vị trí tối ưu COI → lập danh sách ứng viên dời.</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Chỉ ra đúng SKU đang gây lãng phí quãng đi nhiều nhất.</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <circle cx="34" cy="50" r="15" fill="#23201c"/><text x="34" y="54" text-anchor="middle" font-size="9" fill="#fff">I/O</text>
+        <rect x="70" y="30" width="150" height="40" rx="8" fill="#e9f3ec" stroke="#bfe3cd"/><text x="145" y="55" text-anchor="middle" font-size="11" fill="#2f8f5b">gần</text>
+        <rect x="232" y="30" width="150" height="40" rx="8" fill="#fbf0dc" stroke="#ecd9b3"/><text x="307" y="55" text-anchor="middle" font-size="11" fill="#c98a2e">giữa</text>
+        <rect x="394" y="30" width="180" height="40" rx="8" fill="#f1efec" stroke="#ddd7cd"/><text x="450" y="55" text-anchor="middle" font-size="11" fill="#8a847c">xa</text>
+        <g class="av-blink"><circle cx="520" cy="50" r="13" fill="#cf5b52"/><text x="520" y="54" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">🔥</text></g>
+        <text x="520" y="86" text-anchor="middle" font-size="10" fill="#cf5b52" font-weight="700" class="av-blink">⚠ cần dời</text>
+      </svg><div class="sd-cap">Phát hiện: SKU lấy nhiều đang nằm zone xa cửa</div></div>
+    </div>
+    <div class="sd">
+      <div class="sd-h"><span class="sd-n s4">4</span><b>Đề xuất — dời về ô tối ưu</b></div>
+      <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Gợi ý ô mới cho từng SKU theo lớp (gần cửa nếu lấy nhiều), tôn trọng ràng buộc kho (chủ hàng · nhóm cỡ · số SKU/ô). Áp cho cả hàng PO mới về (putaway).</div>
+      <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span><a class="algo-a" href="https://doi.org/10.1287/mnsc.22.6.629" target="_blank" rel="noopener">Bố trí theo lớp — class-based (Hausman 1976)</a>.</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Hàng mới về cất ngay đúng chỗ; hàng tồn lệch chỗ được dời dần → kho luôn tối ưu.</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <circle cx="34" cy="50" r="15" fill="#23201c"/><text x="34" y="54" text-anchor="middle" font-size="9" fill="#fff">I/O</text>
+        <rect x="70" y="30" width="150" height="40" rx="8" fill="#e9f3ec" stroke="#bfe3cd"/><text x="145" y="55" text-anchor="middle" font-size="11" fill="#2f8f5b">gần</text>
+        <rect x="232" y="30" width="150" height="40" rx="8" fill="#fbf0dc" stroke="#ecd9b3"/>
+        <rect x="394" y="30" width="180" height="40" rx="8" fill="#f1efec" stroke="#ddd7cd"/>
+        <path d="M510 78 Q300 110 130 70" fill="none" stroke="#c2603f" stroke-width="1.6" stroke-dasharray="4 4"/>
+        <g class="mv-item" style="--mx:-390px;--my:0px"><circle cx="520" cy="50" r="13" fill="#cf5b52"/><text x="520" y="54" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">🔥</text></g>
+      </svg><div class="sd-cap">Đề xuất: dời SKU nóng về gần cửa xuất (class-based)</div></div>
+    </div>
+    <div class="sd">
+      <div class="sd-h"><span class="sd-n s5">5</span><b>Re-slot — đo lợi ích &amp; lịch tự động</b></div>
+      <div class="sd-r"><span class="sd-k">🎯 Agent làm</span>Đo lợi ích mỗi lần dời (ROI = quãng tiết kiệm − chi phí dời). Chạy <b>thủ công</b> khi WM cần hoặc <b>tự động theo lịch</b> (vd mỗi 2 giờ). Đề xuất gửi người duyệt — không tự ghi WMS (L0).</div>
+      <div class="sd-r"><span class="sd-k">🧮 Thuật toán</span>Chấm điểm ROI move + lập lịch chu kỳ.</div>
+      <div class="sd-r"><span class="sd-k">💡 Áp dụng</span>Chỉ dời khi lợi ích &gt; chi phí → mỗi lần dời đều rút ngắn quãng pick các ca sau.</div>
+      <div class="sd-viz"><svg class="av" viewBox="0 0 600 100">
+        <circle cx="34" cy="50" r="15" fill="#23201c"/><text x="34" y="54" text-anchor="middle" font-size="9" fill="#fff">I/O</text>
+        <rect x="70" y="32" width="200" height="36" rx="8" fill="#e9f3ec" stroke="#bfe3cd"/>
+        <rect x="380" y="32" width="194" height="36" rx="8" fill="#f1efec" stroke="#ddd7cd"/>
+        <g class="mv-item" style="--mx:-360px;--my:0px"><circle cx="500" cy="50" r="13" fill="#cf5b52"/><text x="500" y="54" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">🔥</text></g>
+        <text x="300" y="20" text-anchor="middle" font-size="13" font-weight="800" fill="#2f8f5b" class="av-blink">ROI ✓ rút ngắn quãng pick</text>
+      </svg><div class="sd-cap">Re-slot: chỉ dời khi lợi ích &gt; chi phí (thủ công / lịch 2 h)</div></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:26px">Hai chế độ bố trí</h3>
+  <div class="grid2" style="margin-top:14px">
     <div class="card"><h3 style="margin-top:0">📥 Putaway — hàng PO mới về</h3><p style="font-size:13.5px">Khi có hàng mới nhập kho (theo Phiếu nhập), hệ thống đề xuất <b>ngay ô cất tối ưu cho từng SKU</b>: đúng lớp ABC, gần cửa nếu lấy nhiều, tôn trọng ràng buộc ô (theo chủ hàng · nhóm kích thước · số SKU tối đa/ô). Thuật toán class-based (Hausman 1976).</p></div>
     <div class="card"><h3 style="margin-top:0">🔄 Re-slot — tồn kho chưa tối ưu</h3><p style="font-size:13.5px">Quét hàng đang tồn: SKU lấy nhiều nhưng nằm xa → đề xuất dời gần cửa. Hai chế độ: <b>▶️ Thủ công</b> (chạy khi cần) và <b>⏱️ Tự động theo lịch</b> (vd mỗi 2 giờ, tự đề xuất nếu phát hiện cơ hội). Mọi đề xuất cần người duyệt — không tự ghi WMS.</p></div>
   </div>
