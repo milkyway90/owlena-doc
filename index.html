@@ -1,0 +1,648 @@
+<!doctype html>
+<!-- ════════════════════════════════════════════════════════════════════════════
+  OWLENA — Giải pháp AI Tối ưu Vận hành Kho (Vietful)
+  Tài liệu tổng quan giải pháp · self-contained HTML5 · mở trực tiếp trên trình duyệt, không cần cài đặt.
+  Đối tượng đọc: đội ngũ vận hành · kỹ thuật · sản phẩm.
+═════════════════════════════════════════════════════════════════════════════ -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>OWLENA — Giải pháp AI Tối ưu Vận hành Kho</title>
+<meta name="description" content="OWLENA: tác tử AI tối ưu đường đi lấy hàng (pick-path) và bố trí vị trí kho (dynamic slotting) cho Vietful. Giảm 31% quãng di chuyển, 25% thời gian gom đơn — trên dữ liệu thật.">
+<script id="llm-index" type="application/json">
+{"doc":"OWLENA — Giải pháp AI Tối ưu Vận hành Kho","sections":[
+{"id":"tong-quan","title":"Tổng quan","keywords":["owlena","mục tiêu","kết quả"]},
+{"id":"van-de","title":"Vấn đề vận hành","keywords":["pick-path","đi bộ","SLA","gom đơn"]},
+{"id":"kien-truc","title":"Kiến trúc hệ thống","keywords":["feature store","agent","solver","optiguide","autonomy L0"]},
+{"id":"luong-pickpath","title":"Luồng Pick-Path 5 bước","keywords":["backlog","gom nhóm","picking list","broadcast","tổng kết"]},
+{"id":"luong-slot","title":"Luồng Dynamic Slot","keywords":["ABC","COI","re-slot","affinity"]},
+{"id":"thuat-toan","title":"Thuật toán","keywords":["gower","held-karp","hungarian","clarke-wright","EDD","orienteering","COI"]},
+{"id":"ket-qua","title":"Kết quả benchmark","keywords":["-31%","-25%","win-rate","corpus thật"]},
+{"id":"du-lieu","title":"Nguồn dữ liệu","keywords":["vietful staging","real","missing","OMS","WMS"]},
+{"id":"tham-khao","title":"Tài liệu tham khảo","keywords":["papers","citations"]}]}
+</script>
+<style>
+:root{
+  --bg:#f4f2ee; --card:#ffffff; --ink:#23201c; --ink2:#55504a; --mut:#8a847c;
+  --line:#e6e1d8; --line2:#d8d2c6;
+  --accent:#c2603f; --accent-soft:#fbeee7; --accent-line:#eccdbd;
+  --grn:#2f8f5b; --grn-soft:#e6f3ec; --blue:#3a6ea5; --blue-soft:#e8f0f8;
+  --amber:#c98a2e; --amber-soft:#fbf0dc; --purple:#6a5ab0; --purple-soft:#efecf9;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* top nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(244,242,238,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:18px;height:54px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;letter-spacing:.2px}
+.brand .owl{width:26px;height:26px}
+.nav-links{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.nav-links a{font-size:12.5px;color:var(--ink2);padding:5px 10px;border-radius:7px;font-weight:600}
+.nav-links a:hover{background:var(--accent-soft);color:var(--accent);text-decoration:none}
+@media(max-width:780px){.nav-links{display:none}}
+
+/* hero */
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--line)}
+.eyebrow{display:inline-block;font:700 11.5px var(--sans);letter-spacing:1.4px;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);padding:4px 11px;border-radius:20px}
+.hero h1{font-family:var(--serif);font-size:42px;line-height:1.12;margin:18px 0 14px;letter-spacing:-.4px}
+.hero h1 .hl{color:var(--accent)}
+.hero .lead{font-size:18px;color:var(--ink2);max-width:680px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+@media(max-width:780px){.hero h1{font-size:32px}.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.kpi .v{font:800 30px var(--sans);color:var(--accent);letter-spacing:-.5px}
+.kpi .v small{font-size:16px;color:var(--ink2)}
+.kpi .l{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.kpi.g .v{color:var(--grn)} .kpi.b .v{color:var(--blue)} .kpi.a .v{color:var(--amber)}
+
+/* sections */
+section{padding:46px 0;border-bottom:1px solid var(--line)}
+.sec-tag{font:700 12px var(--sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--accent)}
+h2{font-family:var(--serif);font-size:30px;margin:8px 0 8px;letter-spacing:-.3px}
+.sec-sub{color:var(--ink2);font-size:16px;max-width:720px;margin-bottom:26px}
+h3{font-size:18px;margin:26px 0 10px}
+p{margin:10px 0;color:var(--ink2)}
+.lede{font-size:16.5px;color:var(--ink)}
+
+/* generic card */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:780px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* figure */
+figure{margin:22px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;overflow:hidden}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-size:13px;color:var(--mut);margin-top:12px;text-align:center}
+.svg-wrap{overflow-x:auto}
+
+/* flow steps */
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:8px 0}
+@media(max-width:880px){.flow{grid-template-columns:1fr;gap:10px}}
+.fstep{position:relative;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 14px;margin:0 5px}
+.fstep .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;font:800 13px var(--sans);margin-bottom:8px}
+.fstep h4{font-size:14.5px;margin:0 0 5px}
+.fstep p{font-size:12.5px;margin:5px 0 0;line-height:1.5}
+.fstep .algo{display:inline-block;margin-top:9px;font:600 11px var(--mono);color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:6px;padding:2px 7px}
+.fstep.s1 .n{background:#8a847c}.fstep.s2 .n{background:var(--purple)}.fstep.s3 .n{background:var(--grn)}.fstep.s4 .n{background:var(--blue)}.fstep.s5 .n{background:var(--accent)}
+
+/* algorithm cards */
+.algo-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0;overflow:hidden;display:flex;flex-direction:column}
+.algo-card .ah{display:flex;align-items:center;gap:11px;padding:15px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fbfaf8,transparent)}
+.algo-card .ah .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:20px;background:var(--accent-soft);border:1px solid var(--accent-line);flex:none}
+.algo-card .ah h4{font-size:16px;margin:0}
+.algo-card .ah .tag{font:600 11px var(--mono);color:var(--ink2)}
+.algo-card .ab{padding:16px 18px;flex:1}
+.algo-card .ab p{margin:0 0 10px;font-size:13.5px}
+.algo-card .ab svg{margin:6px 0 12px}
+.algo-card .src{font-size:11.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+.algo-card .src b{color:var(--ink2)}
+.pill{display:inline-block;font:600 11px var(--sans);padding:2px 8px;border-radius:20px;border:1px solid var(--line2)}
+.pill.real{color:var(--grn);background:var(--grn-soft);border-color:#bfe3cd}
+.pill.opt{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line)}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line)}
+th{font-weight:700;color:var(--ink);background:#faf8f5;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+td .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot.g{background:var(--grn)}.dot.a{background:var(--amber)}.dot.r{background:#cf5b52}
+tbody tr:hover{background:#faf8f5}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.tbl-wrap table{margin:0}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;background:#f3efe8;border:1px solid #e6e1d8;border-radius:5px;padding:1px 5px;color:#9a4a2e}
+
+/* benchmark bars */
+.bench{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:780px){.bench{grid-template-columns:1fr}}
+.bbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.bbox h4{font-size:15px;margin:0 0 4px}
+.bbox .meta{font-size:12.5px;color:var(--mut);margin-bottom:16px}
+.bar{margin:11px 0}
+.bar .lab{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+.bar .lab b{color:var(--ink)}
+.bar .track{height:24px;background:#f0ece5;border-radius:7px;overflow:hidden}
+.bar .fill{height:100%;border-radius:7px;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font:700 12px var(--sans)}
+.bar .fill.legacy{background:#b6ada0}
+.bar .fill.agent{background:var(--grn)}
+.win-badge{display:inline-block;margin-top:8px;font:700 13px var(--sans);color:var(--grn);background:var(--grn-soft);border:1px solid #bfe3cd;border-radius:8px;padding:5px 11px}
+
+/* callout */
+.note{display:flex;gap:12px;background:var(--accent-soft);border:1px solid var(--accent-line);border-left:4px solid var(--accent);border-radius:11px;padding:14px 16px;margin:18px 0}
+.note .ic{font-size:20px}
+.note p{margin:0;color:var(--ink);font-size:13.5px}
+.note.honest{background:var(--blue-soft);border-color:#c5d8ea;border-left-color:var(--blue)}
+
+/* refs */
+.refs{columns:2;column-gap:30px;font-size:13px}
+@media(max-width:780px){.refs{columns:1}}
+.refs .r{break-inside:avoid;margin-bottom:13px;padding-left:30px;position:relative;color:var(--ink2)}
+.refs .r .num{position:absolute;left:0;top:0;font:700 11px var(--mono);color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:1px 6px}
+.refs .r b{color:var(--ink)}
+.refs .r .src{font-style:italic;color:var(--mut)}
+
+footer{padding:34px 0 50px;color:var(--mut);font-size:12.5px;text-align:center}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin:14px 0}
+.legend span{display:flex;align-items:center;gap:6px}
+.tline{stroke:var(--line2);stroke-width:1.5;fill:none}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav"><div class="wrap">
+  <div class="brand">
+    <svg class="owl" viewBox="0 0 32 32"><circle cx="16" cy="17" r="13" fill="#c2603f"/><circle cx="11" cy="14" r="4.4" fill="#fff"/><circle cx="21" cy="14" r="4.4" fill="#fff"/><circle cx="11" cy="14" r="2" fill="#23201c"/><circle cx="21" cy="14" r="2" fill="#23201c"/><path d="M13 19 L16 22 L19 19 Z" fill="#f4c542"/><path d="M7 5 L11 9 M25 5 L21 9" stroke="#c2603f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    OWLENA
+  </div>
+  <div class="nav-links">
+    <a href="#van-de">Vấn đề</a>
+    <a href="#kien-truc">Kiến trúc</a>
+    <a href="#luong-pickpath">Pick-Path</a>
+    <a href="#luong-slot">Slotting</a>
+    <a href="#thuat-toan">Thuật toán</a>
+    <a href="#ket-qua">Kết quả</a>
+    <a href="#du-lieu">Dữ liệu</a>
+    <a href="#lay-data">Lấy data</a>
+    <a href="#tham-khao">Tham khảo</a>
+  </div>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero" id="tong-quan"><div class="wrap">
+  <span class="eyebrow">Giải pháp AI · Vận hành kho Vietful</span>
+  <h1>Tác tử AI tối ưu <span class="hl">đường đi lấy hàng</span> và <span class="hl">bố trí kho</span></h1>
+  <p class="lead">OWLENA đọc dữ liệu thật từ hệ thống kho Vietful, đề xuất cách gom đơn — định tuyến — phân công tối ưu, và <b>giải thích từng quyết định</b>. Chế độ vận hành an toàn: chỉ đọc &amp; gợi ý, không tự ghi vào hệ thống.</p>
+  <div class="kpi-row">
+    <div class="kpi g"><div class="v">−31<small>%</small></div><div class="l">Quãng di chuyển khi lấy hàng<br>(1.063 phiếu thật · thắng 100%)</div></div>
+    <div class="kpi b"><div class="v">−25<small>%</small></div><div class="l">Thời gian gom đơn (batching)<br>(4.000 đơn thật)</div></div>
+    <div class="kpi a"><div class="v">−48<small>%</small></div><div class="l">Quãng đường 1 phiếu nhiều ô<br>(thử nghiệm Held–Karp)</div></div>
+    <div class="kpi"><div class="v">21</div><div class="l">Công trình khoa học<br>làm nền tảng thuật toán</div></div>
+  </div>
+</div></header>
+
+<!-- VẤN ĐỀ -->
+<section id="van-de"><div class="wrap">
+  <span class="sec-tag">01 — Bối cảnh</span>
+  <h2>Lấy hàng đi bộ là chi phí lớn nhất trong kho</h2>
+  <p class="sec-sub">Trong kho fulfillment, nhân viên dành tới <b>50% thời gian chỉ để đi bộ</b> giữa các kệ. Thứ tự lấy hàng, cách gom đơn, và vị trí cất hàng quyết định trực tiếp năng suất và khả năng kịp hạn giao (SLA).</p>
+
+  <figure><div class="svg-wrap"><svg viewBox="0 0 920 240" font-family="var(--sans)">
+    <!-- problem → solution diagram -->
+    <rect x="0" y="0" width="430" height="240" rx="14" fill="#fbf2ee"/>
+    <text x="22" y="34" font-size="15" font-weight="800" fill="#c2603f">Hiện trạng — làm thủ công</text>
+    <g font-size="13" fill="#55504a">
+      <text x="22" y="66">• Lấy hàng theo thứ tự sổ ghi (đi lại lòng vòng)</text>
+      <text x="22" y="92">• Gom đơn dựa kinh nghiệm cá nhân</text>
+      <text x="22" y="118">• Phân công người theo cảm tính</text>
+      <text x="22" y="144">• Vị trí hàng cố định, không theo tần suất lấy</text>
+      <text x="22" y="170">• Khó biết phiếu nào sắp trễ SLA</text>
+    </g>
+    <!-- naive zigzag path -->
+    <g transform="translate(22,182)"><rect width="386" height="44" rx="8" fill="#fff" stroke="#eccdbd"/>
+      <polyline points="14,34 60,12 110,34 165,12 220,34 280,12 340,34 372,18" fill="none" stroke="#b6ada0" stroke-width="2.4" stroke-dasharray="4 3"/>
+      <text x="200" y="40" font-size="10.5" fill="#8a847c" text-anchor="middle">đường đi lòng vòng</text>
+    </g>
+    <!-- arrow -->
+    <g transform="translate(440,120)"><path d="M0 0 H38" stroke="#c2603f" stroke-width="3"/><path d="M30 -7 L42 0 L30 7 Z" fill="#c2603f"/></g>
+    <rect x="490" y="0" width="430" height="240" rx="14" fill="#e9f3ec"/>
+    <text x="512" y="34" font-size="15" font-weight="800" fill="#2f8f5b">Với OWLENA — tối ưu bằng thuật toán</text>
+    <g font-size="13" fill="#55504a">
+      <text x="512" y="66">• Định tuyến ngắn nhất (TSP) cho mỗi phiếu</text>
+      <text x="512" y="92">• Gom đơn cùng tuyến (Clarke–Wright)</text>
+      <text x="512" y="118">• Phân công tối ưu theo zone + tốc độ + tải</text>
+      <text x="512" y="144">• Gợi ý dời hàng nóng ra gần cửa (COI)</text>
+      <text x="512" y="170">• Cảnh báo phiếu sát/quá hạn SLA</text>
+    </g>
+    <g transform="translate(512,182)"><rect width="386" height="44" rx="8" fill="#fff" stroke="#bfe3cd"/>
+      <polyline points="14,34 60,30 120,30 180,14 250,14 320,28 372,28" fill="none" stroke="#2f8f5b" stroke-width="2.8"/>
+      <text x="200" y="40" font-size="10.5" fill="#2f8f5b" text-anchor="middle">đường đi tối ưu, ngắn hơn</text>
+    </g>
+  </svg></div><figcaption>Bài toán cốt lõi: rút ngắn quãng di chuyển và sắp xếp công việc thông minh hơn.</figcaption></figure>
+</div></section>
+
+<!-- KIẾN TRÚC -->
+<section id="kien-truc"><div class="wrap">
+  <span class="sec-tag">02 — Kiến trúc</span>
+  <h2>Tác tử điều phối — bộ giải thuật toán quyết số</h2>
+  <p class="sec-sub">OWLENA theo mô hình <b>OptiGuide</b>: mô hình ngôn ngữ (LLM) đóng vai điều phối và <b>diễn giải</b>; còn các con số tối ưu do <b>bộ giải thuật toán</b> (solver) tính toán chặt chẽ. Hệ thống chạy ở mức tự chủ <b>L0 — chỉ đọc</b>, mọi đề xuất cần người duyệt.</p>
+
+  <figure><div class="svg-wrap"><svg viewBox="0 0 920 360" font-family="var(--sans)">
+    <defs><marker id="arr" markerWidth="11" markerHeight="11" refX="7" refY="5" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#8a847c"/></marker></defs>
+    <!-- layer 1 data -->
+    <rect x="0" y="20" width="200" height="320" rx="13" fill="#fff" stroke="#d8d2c6"/>
+    <text x="100" y="48" text-anchor="middle" font-size="13.5" font-weight="800" fill="#23201c">① Dữ liệu thật</text>
+    <text x="100" y="66" text-anchor="middle" font-size="11" fill="#8a847c">Vietful WMS / OMS (staging)</text>
+    <g font-size="12" fill="#55504a">
+      <rect x="18" y="84" width="164" height="38" rx="8" fill="#faf8f5" stroke="#e6e1d8"/><text x="30" y="107">Phiếu pick · đơn · SLA</text>
+      <rect x="18" y="130" width="164" height="38" rx="8" fill="#faf8f5" stroke="#e6e1d8"/><text x="30" y="153">Vị trí ô · tồn kho</text>
+      <rect x="18" y="176" width="164" height="38" rx="8" fill="#faf8f5" stroke="#e6e1d8"/><text x="30" y="199">Lịch sử lấy hàng</text>
+      <rect x="18" y="222" width="164" height="38" rx="8" fill="#faf8f5" stroke="#e6e1d8"/><text x="30" y="245">Hồ sơ nhân viên</text>
+    </g>
+    <text x="100" y="300" text-anchor="middle" font-size="10.5" fill="#8a847c">11.945 ô · 6.593 lượt pick</text>
+    <text x="100" y="318" text-anchor="middle" font-size="10.5" fill="#8a847c">1.659 phiếu đang chờ</text>
+
+    <path d="M200 180 H248" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/>
+
+    <!-- layer 2 feature store -->
+    <rect x="252" y="20" width="180" height="320" rx="13" fill="#eef5f0" stroke="#bfe3cd"/>
+    <text x="342" y="48" text-anchor="middle" font-size="13.5" font-weight="800" fill="#2f8f5b">② Feature Store</text>
+    <text x="342" y="66" text-anchor="middle" font-size="11" fill="#8a847c">chuẩn hoá &amp; đặc trưng</text>
+    <g font-size="12" fill="#55504a">
+      <rect x="270" y="90" width="144" height="36" rx="8" fill="#fff" stroke="#cde7d6"/><text x="282" y="112">Phân lớp ABC</text>
+      <rect x="270" y="134" width="144" height="36" rx="8" fill="#fff" stroke="#cde7d6"/><text x="282" y="156">Chỉ số COI</text>
+      <rect x="270" y="178" width="144" height="36" rx="8" fill="#fff" stroke="#cde7d6"/><text x="282" y="200">Ma trận affinity</text>
+      <rect x="270" y="222" width="144" height="36" rx="8" fill="#fff" stroke="#cde7d6"/><text x="282" y="244">Ước lượng khoảng cách</text>
+    </g>
+    <text x="342" y="296" text-anchor="middle" font-size="10" fill="#8a847c">DuckDB · cập nhật mỗi ca</text>
+
+    <path d="M432 180 H480" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/>
+
+    <!-- layer 3 agent -->
+    <rect x="484" y="20" width="240" height="320" rx="13" fill="#f3eefb" stroke="#d8cdf0"/>
+    <text x="604" y="48" text-anchor="middle" font-size="13.5" font-weight="800" fill="#6a5ab0">③ Tác tử OWLENA</text>
+    <text x="604" y="66" text-anchor="middle" font-size="11" fill="#8a847c">điều phối + giải thích</text>
+    <rect x="502" y="84" width="204" height="58" rx="9" fill="#fff" stroke="#d8cdf0"/>
+    <text x="514" y="106" font-size="12" font-weight="700" fill="#6a5ab0">LLM điều phối</text>
+    <text x="514" y="124" font-size="10.5" fill="#8a847c">chọn việc · diễn giải tiếng Việt</text>
+    <text x="514" y="137" font-size="10.5" fill="#8a847c">(không quyết con số)</text>
+    <rect x="502" y="150" width="204" height="118" rx="9" fill="#fff" stroke="#d8cdf0"/>
+    <text x="514" y="171" font-size="12" font-weight="700" fill="#23201c">Bộ giải thuật toán (solver)</text>
+    <g font-size="10.5" fill="#55504a">
+      <text x="514" y="190">Gom nhóm · Định tuyến (TSP)</text>
+      <text x="514" y="207">Phân công (Hungarian)</text>
+      <text x="514" y="224">Batching · Wave · Interleave</text>
+      <text x="514" y="241">Bố trí vị trí (slotting)</text>
+    </g>
+    <text x="604" y="262" text-anchor="middle" font-size="10" fill="#6a5ab0" font-weight="700">⟵ Solver chốt số ⟶</text>
+    <text x="604" y="300" text-anchor="middle" font-size="10.5" fill="#8a847c">Python thuần · không phụ thuộc</text>
+    <text x="604" y="316" text-anchor="middle" font-size="10.5" fill="#8a847c">toạ độ vẽ kho</text>
+
+    <path d="M724 180 H772" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/>
+
+    <!-- layer 4 output -->
+    <rect x="776" y="20" width="144" height="320" rx="13" fill="#fbf2ee" stroke="#eccdbd"/>
+    <text x="848" y="48" text-anchor="middle" font-size="13.5" font-weight="800" fill="#c2603f">④ Đề xuất</text>
+    <text x="848" y="66" text-anchor="middle" font-size="11" fill="#8a847c">cho người duyệt</text>
+    <g font-size="11.5" fill="#55504a">
+      <rect x="790" y="86" width="116" height="40" rx="8" fill="#fff" stroke="#eccdbd"/><text x="848" y="110" text-anchor="middle">Picking list tối ưu</text>
+      <rect x="790" y="132" width="116" height="40" rx="8" fill="#fff" stroke="#eccdbd"/><text x="848" y="156" text-anchor="middle">Phân công gợi ý</text>
+      <rect x="790" y="178" width="116" height="40" rx="8" fill="#fff" stroke="#eccdbd"/><text x="848" y="202" text-anchor="middle">Cảnh báo SLA</text>
+      <rect x="790" y="224" width="116" height="40" rx="8" fill="#fff" stroke="#eccdbd"/><text x="848" y="248" text-anchor="middle">Dời hàng (re-slot)</text>
+    </g>
+    <rect x="790" y="280" width="116" height="44" rx="8" fill="#23201c"/>
+    <text x="848" y="299" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Autonomy L0</text>
+    <text x="848" y="315" text-anchor="middle" font-size="9.5" fill="#cdc8bf">chỉ đọc · không tự ghi</text>
+  </svg></div><figcaption>Bốn lớp: Dữ liệu thật → Feature Store → Tác tử (LLM điều phối + Solver tính số) → Đề xuất cho người duyệt.</figcaption></figure>
+
+  <div class="note"><div class="ic">🔒</div><p><b>Nguyên tắc an toàn:</b> mô hình ngôn ngữ <b>không bao giờ tự bịa con số</b> — mọi kết quả tối ưu do solver tính. Trường nào hệ thống chưa có dữ liệu sẽ được đánh dấu rõ ràng thay vì đoán.</p></div>
+</div></section>
+
+<!-- LUỒNG PICK-PATH -->
+<section id="luong-pickpath"><div class="wrap">
+  <span class="sec-tag">03 — Quy trình</span>
+  <h2>Luồng Pick-Path — 5 bước</h2>
+  <p class="sec-sub">Từ danh sách phiếu chờ đầu ca đến lệnh pick được phát cho nhân viên. Mỗi bước có thuật toán riêng và đều giải thích được.</p>
+
+  <div class="flow">
+    <div class="fstep s1"><span class="n">1</span><h4>Backlog</h4><p>Đọc toàn bộ phiếu chờ pick + thuộc tính (SLA, ưu tiên, cỡ, chủ hàng, số ô, khu).</p><span class="algo">phân loại + xếp ưu tiên</span></div>
+    <div class="fstep s2"><span class="n">2</span><h4>Gom Nhóm</h4><p>Cụm các phiếu giống nhau để pick một lượt; tách nhóm gấp ra trước.</p><span class="algo">Gower + Agglomerative</span></div>
+    <div class="fstep s3"><span class="n">3</span><h4>Tạo Picking List</h4><p>Tối ưu thứ tự ghé ô (đường đi ngắn nhất) cho mỗi picklist.</p><span class="algo">Held–Karp / NN+2-opt</span></div>
+    <div class="fstep s4"><span class="n">4</span><h4>Broadcast</h4><p>Phân công picklist cho đúng nhân viên (zone quen + tốc độ + tải).</p><span class="algo">Hungarian</span></div>
+    <div class="fstep s5"><span class="n">5</span><h4>Tổng Kết</h4><p>So sánh Agent ⟷ thủ công, đo hiệu quả, phản hồi cải thiện ca sau.</p><span class="algo">benchmark</span></div>
+  </div>
+
+  <h3>Bước 2 quyết định cấu trúc — gom nhóm thông minh</h3>
+  <p>Mỗi đơn được biểu diễn thành vector đặc trưng (chủ hàng, cỡ, loại hàng, khu, SLA, ưu tiên). Thuật toán tính độ giống nhau <b>có trọng số</b> giữa các đơn, rồi gộp cụm dần đến khi đủ chặt. Đơn gấp/ưu tiên cao luôn được tách thành nhóm xử lý trước.</p>
+
+  <figure><div class="svg-wrap"><svg viewBox="0 0 920 220" font-family="var(--sans)">
+    <text x="20" y="28" font-size="13.5" font-weight="800" fill="#23201c">Trước: đơn rời rạc</text>
+    <text x="500" y="28" font-size="13.5" font-weight="800" fill="#2f8f5b">Sau: cụm theo điểm chung</text>
+    <!-- scattered points -->
+    <g>
+      <circle cx="60" cy="80" r="9" fill="#b6ada0"/><circle cx="120" cy="130" r="9" fill="#b6ada0"/><circle cx="90" cy="170" r="9" fill="#b6ada0"/>
+      <circle cx="190" cy="70" r="9" fill="#b6ada0"/><circle cx="240" cy="120" r="9" fill="#b6ada0"/><circle cx="300" cy="90" r="9" fill="#b6ada0"/>
+      <circle cx="160" cy="180" r="9" fill="#b6ada0"/><circle cx="280" cy="170" r="9" fill="#b6ada0"/><circle cx="350" cy="140" r="9" fill="#b6ada0"/>
+      <circle cx="210" cy="160" r="9" fill="#b6ada0"/>
+    </g>
+    <path d="M410 110 H470" stroke="#c2603f" stroke-width="3" marker-end="url(#arr)"/>
+    <!-- clustered -->
+    <g transform="translate(500,0)">
+      <ellipse cx="120" cy="95" rx="78" ry="58" fill="#fbeee7" stroke="#eccdbd"/>
+      <circle cx="95" cy="80" r="9" fill="#c2603f"/><circle cx="140" cy="75" r="9" fill="#c2603f"/><circle cx="120" cy="115" r="9" fill="#c2603f"/><circle cx="150" cy="110" r="9" fill="#c2603f"/>
+      <text x="120" y="170" text-anchor="middle" font-size="11" fill="#c2603f" font-weight="700">⚡ Nhóm gấp</text>
+      <ellipse cx="310" cy="110" rx="72" ry="50" fill="#e9f3ec" stroke="#bfe3cd"/>
+      <circle cx="290" cy="100" r="9" fill="#2f8f5b"/><circle cx="330" cy="95" r="9" fill="#2f8f5b"/><circle cx="310" cy="130" r="9" fill="#2f8f5b"/>
+      <text x="310" y="178" text-anchor="middle" font-size="11" fill="#2f8f5b" font-weight="700">Chủ hàng A · khu R1</text>
+    </g>
+  </svg></div><figcaption>Gom nhóm: đơn tương đồng (cùng chủ hàng, khu, cỡ) được cụm lại để pick hiệu quả; nhóm gấp tách riêng xử lý trước.</figcaption></figure>
+</div></section>
+
+<!-- LUỒNG SLOT -->
+<section id="luong-slot"><div class="wrap">
+  <span class="sec-tag">04 — Quy trình</span>
+  <h2>Luồng Dynamic Slot — bố trí lại vị trí hàng</h2>
+  <p class="sec-sub">Hàng lấy nhiều nên đặt gần cửa xuất; cặp hàng hay đi cùng nhau nên để gần nhau. Mục tiêu: rút ngắn quãng đi của mọi lần pick về sau.</p>
+
+  <div class="flow">
+    <div class="fstep s1"><span class="n">1</span><h4>Tồn kho</h4><p>Đọc vị trí từng SKU, tần suất lấy, quan hệ đi-cùng.</p><span class="algo">ingest</span></div>
+    <div class="fstep s2"><span class="n">2</span><h4>ABC + COI</h4><p>Phân lớp theo tốc độ lấy &amp; chỉ số khối-trên-lần-lấy.</p><span class="algo">COI (Heskett)</span></div>
+    <div class="fstep s3"><span class="n">3</span><h4>Phát hiện</h4><p>SKU nóng đang ở xa → cần kéo gần; cặp đi-cùng đang tách xa.</p><span class="algo">so vị trí vs tối ưu</span></div>
+    <div class="fstep s4"><span class="n">4</span><h4>Đề xuất</h4><p>Gợi ý ô mới theo lớp (class-based), tôn trọng ràng buộc kho.</p><span class="algo">Hausman 1976</span></div>
+    <div class="fstep s5"><span class="n">5</span><h4>Re-slot</h4><p>Đo lợi ích dời hàng (ROI), cập nhật theo mùa vụ.</p><span class="algo">ROI move</span></div>
+  </div>
+
+  <div class="grid2" style="margin-top:18px">
+    <div class="card"><h3 style="margin-top:0">📥 Putaway — hàng PO mới về</h3><p style="font-size:13.5px">Khi có hàng mới nhập kho (theo Phiếu nhập), hệ thống đề xuất <b>ngay ô cất tối ưu cho từng SKU</b>: đúng lớp ABC, gần cửa nếu lấy nhiều, tôn trọng ràng buộc ô (theo chủ hàng · nhóm kích thước · số SKU tối đa/ô). Thuật toán class-based (Hausman 1976).</p></div>
+    <div class="card"><h3 style="margin-top:0">🔄 Re-slot — tồn kho chưa tối ưu</h3><p style="font-size:13.5px">Quét hàng đang tồn: SKU lấy nhiều nhưng nằm xa → đề xuất dời gần cửa. Hai chế độ: <b>▶️ Thủ công</b> (chạy khi cần) và <b>⏱️ Tự động theo lịch</b> (vd mỗi 2 giờ, tự đề xuất nếu phát hiện cơ hội). Mọi đề xuất cần người duyệt — không tự ghi WMS.</p></div>
+  </div>
+
+  <figure><div class="svg-wrap"><svg viewBox="0 0 920 200" font-family="var(--sans)">
+    <text x="20" y="26" font-size="13" font-weight="800" fill="#23201c">Nguyên lý COI: hàng lấy nhiều + gọn → đặt gần cửa xuất (I/O)</text>
+    <!-- IO door -->
+    <circle cx="60" cy="120" r="16" fill="#23201c"/><text x="60" y="125" text-anchor="middle" font-size="10" fill="#fff">I/O</text>
+    <text x="60" y="155" text-anchor="middle" font-size="10.5" fill="#8a847c">cửa xuất</text>
+    <!-- zones -->
+    <rect x="110" y="80" width="180" height="80" rx="10" fill="#e9f3ec" stroke="#bfe3cd"/>
+    <text x="200" y="115" text-anchor="middle" font-size="12" font-weight="700" fill="#2f8f5b">Lớp A — gần</text>
+    <text x="200" y="135" text-anchor="middle" font-size="10.5" fill="#55504a">lấy rất nhiều · COI thấp</text>
+    <rect x="310" y="80" width="180" height="80" rx="10" fill="#fbf0dc" stroke="#ecd9b3"/>
+    <text x="400" y="115" text-anchor="middle" font-size="12" font-weight="700" fill="#c98a2e">Lớp B — giữa</text>
+    <text x="400" y="135" text-anchor="middle" font-size="10.5" fill="#55504a">lấy vừa</text>
+    <rect x="510" y="80" width="180" height="80" rx="10" fill="#f1efec" stroke="#ddd7cd"/>
+    <text x="600" y="115" text-anchor="middle" font-size="12" font-weight="700" fill="#8a847c">Lớp C — xa</text>
+    <text x="600" y="135" text-anchor="middle" font-size="10.5" fill="#55504a">lấy ít · cồng kềnh</text>
+    <path d="M76 120 H106" stroke="#2f8f5b" stroke-width="2.4" marker-end="url(#arr)"/>
+    <!-- affinity -->
+    <g transform="translate(720,80)">
+      <rect width="180" height="80" rx="10" fill="#f3eefb" stroke="#d8cdf0"/>
+      <text x="90" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#6a5ab0">Affinity</text>
+      <circle cx="60" cy="55" r="11" fill="#6a5ab0"/><circle cx="120" cy="55" r="11" fill="#6a5ab0"/><path d="M71 55 H109" stroke="#6a5ab0" stroke-width="2.5"/>
+      <text x="90" y="78" text-anchor="middle" font-size="10" fill="#55504a">hay đi cùng → để gần</text>
+    </g>
+  </svg></div><figcaption>Bố trí theo COI + affinity: tối thiểu hoá tổng quãng đi của các lần pick trong tương lai.</figcaption></figure>
+</div></section>
+
+<!-- THUẬT TOÁN -->
+<section id="thuat-toan"><div class="wrap">
+  <span class="sec-tag">05 — Lõi kỹ thuật</span>
+  <h2>Thuật toán &amp; nguồn khoa học</h2>
+  <p class="sec-sub">Mỗi bài toán dùng thuật toán đã được kiểm chứng trong tài liệu vận trù học &amp; logistics. <span class="pill opt">tối ưu tuyệt đối</span> = cho lời giải tốt nhất; <span class="pill real">dữ liệu thật</span> = chạy trên số liệu Vietful.</p>
+
+  <div class="grid2">
+    <!-- grouping -->
+    <div class="algo-card">
+      <div class="ah"><div class="ic">🧩</div><div><h4>Gom nhóm đơn</h4><div class="tag">Weighted Gower + Agglomerative</div></div></div>
+      <div class="ab">
+        <p>Đo độ khác biệt giữa 2 đơn trên nhiều tiêu chí hỗn hợp (vừa định tính vừa định lượng) bằng <b>khoảng cách Gower có trọng số</b>, rồi gộp cụm dần theo phương pháp Ward đến khi nhóm đủ chặt.</p>
+        <svg viewBox="0 0 380 64"><g><circle cx="30" cy="32" r="8" fill="#c2603f"/><circle cx="60" cy="20" r="8" fill="#c2603f"/><circle cx="55" cy="46" r="8" fill="#c2603f"/></g><path d="M95 32 H125" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><rect x="135" y="14" width="60" height="36" rx="9" fill="#fbeee7" stroke="#eccdbd"/><text x="165" y="37" text-anchor="middle" font-size="11" fill="#c2603f">cụm 1</text><rect x="215" y="14" width="60" height="36" rx="9" fill="#e9f3ec" stroke="#bfe3cd"/><text x="245" y="37" text-anchor="middle" font-size="11" fill="#2f8f5b">cụm 2</text><rect x="295" y="14" width="60" height="36" rx="9" fill="#e8f0f8" stroke="#c5d8ea"/><text x="325" y="37" text-anchor="middle" font-size="11" fill="#3a6ea5">cụm 3</text></svg>
+        <span class="pill real">dữ liệu thật</span>
+      </div>
+      <div class="src">📚 <b>Gower (1971)</b> · Ward (1963) · Henn–Koch–Wäscher (Order Batching Survey)</div>
+    </div>
+
+    <!-- route -->
+    <div class="algo-card">
+      <div class="ah"><div class="ic">🗺️</div><div><h4>Định tuyến đường đi</h4><div class="tag">Held–Karp · NN + 2-opt + Or-opt</div></div></div>
+      <div class="ab">
+        <p>Bài toán người giao hàng (TSP) trong phiếu: tìm thứ tự ghé ô ngắn nhất. Phiếu ≤12 ô dùng <b>Held–Karp</b> (tối ưu tuyệt đối bằng quy hoạch động); phiếu dài hơn dùng heuristic láng giềng gần + 2-opt + Or-opt. Có cơ chế giữ thứ tự quen khi lợi ích &lt;5%.</p>
+        <svg viewBox="0 0 380 64"><circle cx="20" cy="50" r="6" fill="#23201c"/><text x="20" y="40" font-size="9" fill="#8a847c" text-anchor="middle">I/O</text><g fill="#2f8f5b"><circle cx="70" cy="20" r="6"/><circle cx="130" cy="44" r="6"/><circle cx="200" cy="16" r="6"/><circle cx="260" cy="40" r="6"/><circle cx="330" cy="24" r="6"/></g><polyline points="20,50 70,20 130,44 200,16 260,40 330,24" fill="none" stroke="#2f8f5b" stroke-width="2.6"/></svg>
+        <span class="pill opt">tối ưu tuyệt đối</span> <span class="pill real">dữ liệu thật</span>
+      </div>
+      <div class="src">📚 <b>Held &amp; Karp (1962)</b> · Ratliff–Rosenthal (1983) · Croes (1958) · Lin–Kernighan (1973)</div>
+    </div>
+
+    <!-- matching -->
+    <div class="algo-card">
+      <div class="ah"><div class="ic">👷</div><div><h4>Phân công nhân viên</h4><div class="tag">Hungarian (Kuhn–Munkres)</div></div></div>
+      <div class="ab">
+        <p>Bài toán gán tối ưu: ghép picklist ↔ nhân viên sao cho tổng chi phí thấp nhất, dựa trên 3 tín hiệu thật — <b>khu quen</b> (lịch sử pick), <b>tốc độ</b>, <b>cân tải</b>. Độ phức tạp O(n³).</p>
+        <svg viewBox="0 0 380 64"><g font-size="10" fill="#55504a"><text x="14" y="20">P.list</text><text x="300" y="20">Nhân viên</text></g><g><rect x="14" y="26" width="54" height="14" rx="4" fill="#fbeee7" stroke="#eccdbd"/><rect x="14" y="44" width="54" height="14" rx="4" fill="#fbeee7" stroke="#eccdbd"/></g><g><rect x="300" y="26" width="54" height="14" rx="4" fill="#e9f3ec" stroke="#bfe3cd"/><rect x="300" y="44" width="54" height="14" rx="4" fill="#e9f3ec" stroke="#bfe3cd"/></g><path d="M68 33 L300 33" stroke="#2f8f5b" stroke-width="2"/><path d="M68 51 L300 51" stroke="#2f8f5b" stroke-width="2"/><path d="M68 33 L300 51" stroke="#ddd7cd" stroke-width="1" stroke-dasharray="3 3"/></svg>
+        <span class="pill real">dữ liệu thật</span>
+      </div>
+      <div class="src">📚 <b>Kuhn (1955)</b> · Jonker &amp; Volgenant (1987)</div>
+    </div>
+
+    <!-- batching -->
+    <div class="algo-card">
+      <div class="ah"><div class="ic">📦</div><div><h4>Gom đơn thành cụm</h4><div class="tag">Clarke–Wright + VND + ILS</div></div></div>
+      <div class="ab">
+        <p>Gộp các đơn đi <b>chung đường</b> thành một chuyến để tiết kiệm quãng di chuyển (Order Batching). Dùng tiết kiệm Clarke–Wright kết hợp tìm kiếm lân cận (VND) và lặp tái khởi (ILS) — không bao giờ kém phương án tuần tự.</p>
+        <svg viewBox="0 0 380 64"><g fill="#b6ada0"><circle cx="30" cy="20" r="6"/><circle cx="30" cy="44" r="6"/><circle cx="60" cy="32" r="6"/></g><path d="M90 32 H120" stroke="#c2603f" stroke-width="2" marker-end="url(#arr)"/><rect x="130" y="14" width="90" height="36" rx="9" fill="#fbeee7" stroke="#eccdbd"/><text x="175" y="37" text-anchor="middle" font-size="11" fill="#c2603f">1 chuyến gộp</text><text x="260" y="37" font-size="11" fill="#2f8f5b" font-weight="700">−25% quãng đi</text></svg>
+        <span class="pill real">dữ liệu thật</span>
+      </div>
+      <div class="src">📚 <b>Clarke &amp; Wright (1964)</b> · Gademann &amp; van de Velde (2005)</div>
+    </div>
+
+    <!-- wave -->
+    <div class="algo-card">
+      <div class="ah"><div class="ic">🌊</div><div><h4>Xếp đợt thả theo SLA</h4><div class="tag">EDD — Earliest Due Date</div></div></div>
+      <div class="ab">
+        <p>Gom đơn theo hạn giao thành các đợt thả (wave): đơn sát hạn xử trước. Đơn không đủ thời gian chuẩn bị được cảnh báo ngoại lệ ngay.</p>
+        <svg viewBox="0 0 380 56"><g font-size="10" fill="#fff" font-weight="700"><rect x="14" y="16" width="80" height="26" rx="7" fill="#cf5b52"/><text x="54" y="33" text-anchor="middle">gấp nhất</text><rect x="104" y="16" width="80" height="26" rx="7" fill="#c98a2e"/><text x="144" y="33" text-anchor="middle">gấp vừa</text><rect x="194" y="16" width="80" height="26" rx="7" fill="#2f8f5b"/><text x="234" y="33" text-anchor="middle">thường</text></g><path d="M284 29 H320" stroke="#8a847c" stroke-width="2" marker-end="url(#arr)"/><text x="350" y="33" font-size="10" fill="#8a847c" text-anchor="middle">đợt thả</text></svg>
+        <span class="pill">dữ liệu SLA: cần webhook OMS</span>
+      </div>
+      <div class="src">📚 <b>Jackson (1955)</b> · Pinedo — Scheduling (2016)</div>
+    </div>
+
+    <!-- interleave + slotting -->
+    <div class="algo-card">
+      <div class="ah"><div class="ic">🔁</div><div><h4>Một chuyến hai việc &amp; Bố trí kho</h4><div class="tag">Orienteering · COI · Class-based</div></div></div>
+      <div class="ab">
+        <p><b>Interleave:</b> ghép việc cất hàng (putaway) vào lộ trình pick đang đi nếu lợi ích &gt; chi phí vòng thêm (bài toán Orienteering/PCTSP rút gọn), giữ nguyên thứ tự pick gốc.</p>
+        <p><b>Slotting:</b> chấm điểm vị trí theo COI (khối/lần-lấy) + phân lớp theo Hausman, tôn trọng ràng buộc kho.</p>
+        <span class="pill real">dữ liệu thật</span>
+      </div>
+      <div class="src">📚 <b>Vansteenwegen (2011)</b> · Heskett (1963) · Hausman–Schwarz–Graves (1976)</div>
+    </div>
+  </div>
+
+  <div class="note"><div class="ic">🤖</div><p><b>Vai trò của mô hình ngôn ngữ:</b> chỉ điều phối thứ tự bước và diễn giải kết quả bằng tiếng Việt cho người vận hành — theo mẫu <b>OptiGuide</b> (Li et al., Microsoft Research 2023) và khung suy luận <b>ReAct</b> (Yao et al., 2022). Con số luôn do solver tính.</p></div>
+</div></section>
+
+<!-- KẾT QUẢ -->
+<section id="ket-qua"><div class="wrap">
+  <span class="sec-tag">06 — Kết quả</span>
+  <h2>Đo trên dữ liệu thật, cùng hệ quy chiếu</h2>
+  <p class="sec-sub">So sánh Agent với cách làm hiện tại trên <b>toàn bộ corpus thật</b> của Vietful (không phải vài đơn mẫu), cùng một mô hình khoảng cách.</p>
+
+  <div class="bench">
+    <div class="bbox">
+      <h4>Định tuyến (Route)</h4>
+      <div class="meta">1.063 phiếu thật · tỷ lệ thắng 100%</div>
+      <div class="bar"><div class="lab"><span>Thủ công hiện tại</span><b>3.644s</b></div><div class="track"><div class="fill legacy" style="width:100%">100%</div></div></div>
+      <div class="bar"><div class="lab"><span>OWLENA (TSP)</span><b>2.508s</b></div><div class="track"><div class="fill agent" style="width:68.8%">69%</div></div></div>
+      <div class="win-badge">▼ Giảm 31% tổng quãng di chuyển</div>
+    </div>
+    <div class="bbox">
+      <h4>Gom đơn (Batching)</h4>
+      <div class="meta">4.000 đơn thật</div>
+      <div class="bar"><div class="lab"><span>Gom tuần tự</span><b>cơ sở</b></div><div class="track"><div class="fill legacy" style="width:100%">100%</div></div></div>
+      <div class="bar"><div class="lab"><span>OWLENA (Clarke–Wright)</span><b>−25%</b></div><div class="track"><div class="fill agent" style="width:74.8%">75%</div></div></div>
+      <div class="win-badge">▼ Giảm 25% thời gian gom đơn</div>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-top:18px">
+    <div class="card" style="text-align:center"><div style="font:800 26px var(--sans);color:var(--accent)">−47,9%</div><p style="font-size:13px;margin:4px 0 0">Quãng đường 1 phiếu nhiều ô<br>(thử nghiệm Held–Karp · 106 phiếu)</p></div>
+    <div class="card" style="text-align:center"><div style="font:800 26px var(--sans);color:var(--grn)">100%</div><p style="font-size:13px;margin:4px 0 0">Tỷ lệ phiếu Agent đi ngắn hơn<br>hoặc bằng thủ công (never-worse)</p></div>
+    <div class="card" style="text-align:center"><div style="font:800 26px var(--sans);color:var(--blue)">L0</div><p style="font-size:13px;margin:4px 0 0">Mức tự chủ: chỉ đọc &amp; gợi ý,<br>không tự ghi vào WMS</p></div>
+  </div>
+  <div class="note honest"><div class="ic">📐</div><p><b>Minh bạch số liệu:</b> các con số trên đo bằng cùng một mô hình khoảng cách (T1-empirical, suy từ chênh lệch thời gian giữa các lần pick thật). Số liệu phụ thuộc dữ liệu thực thi sẽ được đánh dấu là "mô phỏng" cho đến khi có log vận hành thật.</p></div>
+</div></section>
+
+<!-- DỮ LIỆU -->
+<section id="du-lieu"><div class="wrap">
+  <span class="sec-tag">07 — Dữ liệu</span>
+  <h2>Nguồn dữ liệu &amp; mức độ sẵn sàng</h2>
+  <p class="sec-sub">Hệ thống minh bạch về việc tiêu chí nào đang dùng dữ liệu thật, tiêu chí nào còn chờ bơm từ hệ thống nguồn.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Tiêu chí</th><th>Trạng thái</th><th>Nguồn</th></tr></thead>
+    <tbody>
+      <tr><td>SLA / hạn xử lý</td><td><span class="dot g"></span>Đang dùng</td><td>Phiếu pick (slaRemain, stateName)</td></tr>
+      <tr><td>Độ ưu tiên</td><td><span class="dot g"></span>Đang dùng</td><td>Phiếu pick (priority)</td></tr>
+      <tr><td>Chủ hàng (merchant)</td><td><span class="dot g"></span>Đang dùng</td><td>Sản phẩm (partnerName)</td></tr>
+      <tr><td>Cỡ · loại hàng · số ô · khu</td><td><span class="dot g"></span>Đang dùng</td><td>Phiếu &amp; dòng phiếu</td></tr>
+      <tr><td>Vị trí ô · tần suất lấy · affinity</td><td><span class="dot g"></span>Đang dùng</td><td>Lịch sử pick (11.945 ô · 6.593 lượt)</td></tr>
+      <tr><td>Kênh bán · tỉnh giao · đơn vị vận chuyển</td><td><span class="dot a"></span>Chờ bơm</td><td>Hệ thống đơn hàng (OMS)</td></tr>
+      <tr><td>Trọng lượng · giá trị đơn</td><td><span class="dot r"></span>Chưa thu thập</td><td>Cần bổ sung từ nguồn</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:13px;color:var(--mut)">Ghi chú: "đơn vị vận chuyển" (J&amp;T/GHN/GHTK…) là hãng giao chặng cuối — khác với "chủ hàng" (thương nhân gửi hàng vào kho). Vietful đóng vai 3PL fulfillment.</p>
+</div></section>
+
+<!-- LẤY DATA TỪ VIETFUL -->
+<section id="lay-data"><div class="wrap">
+  <span class="sec-tag">08 — Đường dữ liệu</span>
+  <h2>OWLENA lấy dữ liệu Backlog từ Vietful như thế nào</h2>
+  <p class="sec-sub">Toàn bộ con số trên màn hình bắt nguồn từ hệ thống thật của Vietful (WMS &amp; OMS staging). Đây là đường đi của dữ liệu, gồm <b>7 bước</b> — chạy ở chế độ <b>chỉ đọc</b>, không bao giờ ghi ngược vào kho.</p>
+
+  <figure><div class="svg-wrap"><svg viewBox="0 0 960 300" font-family="var(--sans)">
+    <defs><marker id="arr2" markerWidth="11" markerHeight="11" refX="7" refY="5" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#8a847c"/></marker></defs>
+
+    <!-- ZONE 1 — Vietful -->
+    <rect x="6" y="58" width="420" height="200" rx="14" fill="#eef3fb" stroke="#cdddf2"/>
+    <text x="216" y="44" text-anchor="middle" font-size="12.5" font-weight="800" fill="#3a6fb0">PHÍA VIETFUL · staging (chỉ đọc)</text>
+    <!-- ZONE 2 — OWLENA -->
+    <rect x="440" y="58" width="514" height="200" rx="14" fill="#faf6f0" stroke="#ece3d6"/>
+    <text x="697" y="44" text-anchor="middle" font-size="12.5" font-weight="800" fill="#6a5ab0">PHÍA OWLENA · trích &amp; tính</text>
+
+    <!-- B1 -->
+    <rect x="18" y="104" width="124" height="96" rx="11" fill="#fff" stroke="#cdddf2"/>
+    <circle cx="38" cy="128" r="11" fill="#3a6fb0"/><text x="38" y="132" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">1</text>
+    <text x="56" y="133" font-size="11" font-weight="800" fill="#23201c">Đăng nhập</text>
+    <text x="30" y="158" font-size="10.5" fill="#55504a">Keycloak OAuth2 token</text>
+    <text x="30" y="182" font-size="9.5" fill="#c2603f" font-family="ui-monospace,monospace">api_client.py</text>
+    <path d="M142 152 H156" stroke="#8a847c" stroke-width="2" marker-end="url(#arr2)"/>
+    <!-- B2 -->
+    <rect x="156" y="104" width="124" height="96" rx="11" fill="#fff" stroke="#cdddf2"/>
+    <circle cx="176" cy="128" r="11" fill="#3a6fb0"/><text x="176" y="132" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">2</text>
+    <text x="194" y="133" font-size="11" font-weight="800" fill="#23201c">Ký HMAC</text>
+    <text x="168" y="158" font-size="10.5" fill="#55504a">SHA-256 · chỉ WMS</text>
+    <text x="168" y="182" font-size="9.5" fill="#c2603f" font-family="ui-monospace,monospace">api_client.py</text>
+    <path d="M280 152 H294" stroke="#8a847c" stroke-width="2" marker-end="url(#arr2)"/>
+    <!-- B3 -->
+    <rect x="294" y="104" width="120" height="96" rx="11" fill="#fff" stroke="#cdddf2"/>
+    <circle cx="314" cy="128" r="11" fill="#3a6fb0"/><text x="314" y="132" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">3</text>
+    <text x="332" y="133" font-size="11" font-weight="800" fill="#23201c">Dump 13 bộ</text>
+    <text x="306" y="158" font-size="10.5" fill="#55504a">che PII → .jsonl</text>
+    <text x="306" y="182" font-size="9.5" fill="#c2603f" font-family="ui-monospace,monospace">dump.py</text>
+
+    <!-- cross-zone -->
+    <path d="M414 152 H452" stroke="#6a5ab0" stroke-width="2.4" marker-end="url(#arr2)"/>
+
+    <!-- B4 -->
+    <rect x="452" y="104" width="112" height="96" rx="11" fill="#fff" stroke="#e0d6f2"/>
+    <circle cx="472" cy="128" r="11" fill="#6a5ab0"/><text x="472" y="132" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">4</text>
+    <text x="490" y="133" font-size="11" font-weight="800" fill="#23201c">Nạp DuckDB</text>
+    <text x="464" y="158" font-size="10.5" fill="#55504a">bảng raw_*</text>
+    <text x="464" y="182" font-size="9" fill="#6a5ab0" font-family="ui-monospace,monospace">build_features</text>
+    <path d="M564 152 H578" stroke="#8a847c" stroke-width="2" marker-end="url(#arr2)"/>
+    <!-- B5 -->
+    <rect x="578" y="104" width="112" height="96" rx="11" fill="#fff" stroke="#e0d6f2"/>
+    <circle cx="598" cy="128" r="11" fill="#6a5ab0"/><text x="598" y="132" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">5</text>
+    <text x="616" y="133" font-size="11" font-weight="800" fill="#23201c">Đặc trưng</text>
+    <text x="590" y="158" font-size="10" fill="#55504a">ABC · COI · affinity</text>
+    <text x="590" y="182" font-size="9" fill="#6a5ab0" font-family="ui-monospace,monospace">build_features</text>
+    <path d="M690 152 H704" stroke="#8a847c" stroke-width="2" marker-end="url(#arr2)"/>
+    <!-- B6 -->
+    <rect x="704" y="104" width="112" height="96" rx="11" fill="#fff" stroke="#e0d6f2"/>
+    <circle cx="724" cy="128" r="11" fill="#6a5ab0"/><text x="724" y="132" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">6</text>
+    <text x="742" y="133" font-size="11" font-weight="800" fill="#23201c">Lọc backlog</text>
+    <text x="716" y="158" font-size="10.5" fill="#55504a">phiếu chưa pick</text>
+    <text x="716" y="182" font-size="9.5" fill="#6a5ab0" font-family="ui-monospace,monospace">store.py</text>
+    <path d="M816 152 H830" stroke="#8a847c" stroke-width="2" marker-end="url(#arr2)"/>
+    <!-- B7 -->
+    <rect x="830" y="104" width="112" height="96" rx="11" fill="#fbf2ee" stroke="#eccdbd"/>
+    <circle cx="850" cy="128" r="11" fill="#c2603f"/><text x="850" y="132" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">7</text>
+    <text x="868" y="133" font-size="11" font-weight="800" fill="#23201c">Ra màn hình</text>
+    <text x="842" y="158" font-size="10.5" fill="#55504a">1.659 phiếu chờ</text>
+    <text x="842" y="182" font-size="9" fill="#c2603f" font-family="ui-monospace,monospace">/pickpath/backlog</text>
+
+    <text x="216" y="238" text-anchor="middle" font-size="10.5" fill="#8a847c">OAuth2 + HMAC-SHA256 · credential để trong .env (không commit)</text>
+    <text x="697" y="238" text-anchor="middle" font-size="10.5" fill="#8a847c">DuckDB feature store · snapshot ngày 2026-06-12</text>
+  </svg></div><figcaption>Bảy bước từ hệ thống Vietful tới màn Backlog của OWLENA. Ba bước đầu chạy phía Vietful (đăng nhập, ký, tải về); bốn bước sau OWLENA tự xử lý cục bộ.</figcaption></figure>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Bước</th><th>Thao tác</th><th>Công cụ</th><th>Kết quả</th></tr></thead>
+    <tbody>
+      <tr><td><b>1. Đăng nhập</b></td><td>Lấy token qua Keycloak (OAuth2 password-grant), tự gia hạn khi hết hạn 12h.</td><td><code>tools/api_client.py</code></td><td>access_token cho WMS &amp; OMS</td></tr>
+      <tr><td><b>2. Ký HMAC</b></td><td>Riêng WMS: lấy sigKey động từ <code>settings.json</code>, ký mỗi request bằng HMAC-SHA256 (6 header). OMS chỉ cần Bearer.</td><td><code>tools/api_client.py</code></td><td>request hợp lệ với <code>ops-api</code></td></tr>
+      <tr><td><b>3. Tải 13 bộ dữ liệu</b></td><td>Gọi API có phân trang, <b>che thông tin cá nhân</b> (tên/SĐT/địa chỉ → <code>***</code>; nhân viên → P01…) trước khi ghi.</td><td><code>tools/dump.py</code></td><td>13 file <code>.jsonl</code> (≈100k bản ghi)</td></tr>
+      <tr><td><b>4. Nạp DuckDB</b></td><td>Đọc JSONL vào cơ sở dữ liệu cục bộ thành các bảng thô <code>raw_*</code>.</td><td><code>etl/build_features.py</code></td><td><code>features.duckdb</code></td></tr>
+      <tr><td><b>5. Tính đặc trưng</b></td><td>Suy ra phân lớp ABC, chỉ số COI, ma trận affinity, ước lượng khoảng cách kho từ lịch sử pick thật.</td><td><code>etl/build_features.py</code></td><td>bảng đặc trưng cho solver</td></tr>
+      <tr><td><b>6. Lọc backlog</b></td><td>Chọn phiếu còn ở 5 trạng thái chưa hoàn tất (New, Ready, Partial, Picking, Waiting), gắn chủ hàng/khu/số ô/SLA.</td><td><code>api/store.py</code></td><td>danh sách phiếu chờ xử lý</td></tr>
+      <tr><td><b>7. Trả về màn hình</b></td><td>API gói lại theo nhóm trạng thái / ưu tiên / SLA cho màn Backlog hiển thị.</td><td><code>GET /pickpath/backlog</code></td><td><b>1.659 phiếu</b> + thống kê</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note"><div class="ic">📌</div><p><b>Ảnh chụp tĩnh, không gọi trực tiếp:</b> dữ liệu hiện tại là bản dump ngày <b>2026-06-12</b> để demo ổn định — OWLENA không gọi sang Vietful theo thời gian thực. Muốn làm mới: chạy lại <code>dump.py</code> rồi <code>build_features.py</code>. Đơn vị SLA đọc theo đúng Vietful là <b>giờ</b> (trường <code>slaRemain</code>), không phải phút. Toàn bộ ở mức tự chủ <b>L0 — chỉ đọc</b>; credential nằm trong tệp <code>.env</code> không đưa lên kho mã nguồn.</p></div>
+</div></section>
+
+<!-- THAM KHẢO -->
+<section id="tham-khao" style="border-bottom:none"><div class="wrap">
+  <span class="sec-tag">09 — Cơ sở khoa học</span>
+  <h2>Tài liệu tham khảo (21)</h2>
+  <p class="sec-sub">Toàn bộ thuật toán đều dựa trên các công trình đã công bố, có thể tra cứu.</p>
+  <div class="refs">
+    <div class="r"><span class="num">1</span><b>Gower, J. C. (1971).</b> A General Coefficient of Similarity. <span class="src">Biometrics 27(4).</span></div>
+    <div class="r"><span class="num">2</span><b>Weighted Gower distance clustering for mixed-type data (2024).</b> <span class="src">BMC Med Res Methodology.</span></div>
+    <div class="r"><span class="num">3</span><b>Ward, J. H. (1963).</b> Hierarchical Grouping to Optimize an Objective Function. <span class="src">JASA 58.</span></div>
+    <div class="r"><span class="num">4</span><b>Henn, Koch, Wäscher.</b> Order Batching in Order Picking Warehouses: A Survey. <span class="src">OR Spectrum.</span></div>
+    <div class="r"><span class="num">5</span><b>Order-batching heuristics based on cluster analysis.</b> <span class="src">Int. J. Production Research.</span></div>
+    <div class="r"><span class="num">6</span><b>Held, M. &amp; Karp, R. (1962).</b> A Dynamic Programming Approach to Sequencing Problems. <span class="src">J. SIAM 10(1).</span></div>
+    <div class="r"><span class="num">7</span><b>Ratliff, H. D. &amp; Rosenthal, A. S. (1983).</b> Order-Picking in a Rectangular Warehouse. <span class="src">Operations Research 31(3).</span></div>
+    <div class="r"><span class="num">8</span><b>Roodbergen &amp; de Koster (2001).</b> Routing order pickers in a warehouse. <span class="src">EJOR 133.</span></div>
+    <div class="r"><span class="num">9</span><b>Croes, G. A. (1958).</b> A Method for Solving TSP (2-opt). <span class="src">Operations Research 6(6).</span></div>
+    <div class="r"><span class="num">10</span><b>Lin, S. &amp; Kernighan, B. (1973).</b> An Effective Heuristic for the TSP. <span class="src">Operations Research 21(2).</span></div>
+    <div class="r"><span class="num">11</span><b>Kuhn, H. W. (1955).</b> The Hungarian Method for the Assignment Problem. <span class="src">Naval Research Logistics Q. 2.</span></div>
+    <div class="r"><span class="num">12</span><b>Jonker, R. &amp; Volgenant, A. (1987).</b> A Shortest Augmenting Path Algorithm. <span class="src">Computing 38.</span></div>
+    <div class="r"><span class="num">13</span><b>Clarke, G. &amp; Wright, J. (1964).</b> Scheduling of Vehicles from a Central Depot. <span class="src">Operations Research 12(4).</span></div>
+    <div class="r"><span class="num">14</span><b>Jackson, J. R. (1955).</b> Scheduling a Production Line to Minimize Maximum Tardiness. <span class="src">UCLA Mgmt Sci.</span></div>
+    <div class="r"><span class="num">15</span><b>Pinedo, M.</b> Scheduling: Theory, Algorithms, and Systems (5th ed.). <span class="src">Springer (2016).</span></div>
+    <div class="r"><span class="num">16</span><b>Vansteenwegen, Souffriau, Van Oudheusden (2011).</b> The Orienteering Problem: A Survey. <span class="src">EJOR 209.</span></div>
+    <div class="r"><span class="num">17</span><b>Gademann, N. &amp; van de Velde, S. (2005).</b> Order batching to minimize total travel. <span class="src">IIE Transactions 37.</span></div>
+    <div class="r"><span class="num">18</span><b>Heskett, J. L. (1963).</b> Cube-per-Order Index: A Key to Warehouse Stock Location. <span class="src">Transportation &amp; Distribution Mgmt 3.</span></div>
+    <div class="r"><span class="num">19</span><b>Hausman, Schwarz, Graves (1976).</b> Optimal Storage Assignment. <span class="src">Management Science 22(6).</span></div>
+    <div class="r"><span class="num">20</span><b>Li et al. (2023).</b> Large Language Models for Supply Chain Optimization (OptiGuide). <span class="src">Microsoft Research, arXiv:2307.03875.</span></div>
+    <div class="r"><span class="num">21</span><b>Yao et al. (2022).</b> ReAct: Synergizing Reasoning and Acting in Language Models. <span class="src">arXiv:2210.03629.</span></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  OWLENA — Giải pháp AI Tối ưu Vận hành Kho · Tài liệu tổng quan giải pháp.<br>
+  Chế độ vận hành Autonomy L0 (chỉ đọc &amp; gợi ý). Số liệu đo trên dữ liệu thật Vietful staging.
+</div></footer>
+
+</body>
+</html>
